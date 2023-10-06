@@ -1,6 +1,7 @@
 [TOC]
 # sort
-## selection sort
+## elementary sorts
+### selection sort
 at each turn, select the right element from rest, and put it in final position.
 - proposition
   - compares: $\sum_{0}^{N-1}(N-i-1) = \frac{N(N-1)}{2} \sim \frac{N^2}{2} = \Theta (N^2)$
@@ -8,7 +9,7 @@ at each turn, select the right element from rest, and put it in final position.
 - running time insensitive to input: quadratic time, even if input is sorted
 - data movement is minimal: linear time of exchanges
 
-## insertion sort
+### insertion sort
 at each turn, select right element from "seen" elements, then move it from right to left, switching each "larger" element to its left
 - proposition
   - best case: $N-1$ compares, $0$ exchanges
@@ -18,7 +19,7 @@ at each turn, select right element from "seen" elements, then move it from right
 - excellent for partially sorted arrays whose inversions is $O(N)$ -- in linear time, for compares = exchanges + $N - 1$
 - fine to tiny arrays
 
-## shell sort
+### shell sort
 shell sort is an extension of insertion sort. partially sorted array is friendly to insertion sort.
 
 - `h-sorted` array: subarray that has strike h started anywhere is sorted
@@ -37,7 +38,8 @@ shell sort is an extension of insertion sort. partially sorted array is friendly
  \end{array} \right. \\
  $$
 
-- proposition: worst case $N ^ {\frac{3}{2}}$ (using $3x + 1$)
+- proposition: 
+  - worst case: $N ^ {\frac{3}{2}}$ (using $3x + 1$) compares
 
 # reference
 1. [princeton algorithm, 4th edition](https://algs4.cs.princeton.edu/home/)

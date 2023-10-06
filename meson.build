@@ -16,9 +16,11 @@ search_dir = 'search/'
 graph_dir = 'graph/'
 string_dir = 'string/'
 time_dir = 'time/'
+random_dir = 'random/'
 
 alg_lib = shared_library('alg', 
   inc_dir + time_dir + 'timer.hpp',
+  inc_dir + random_dir + 'random.hpp',
   inc_dir + sort_dir + 'selection.hpp',
   inc_dir + sort_dir + 'insertion.hpp',
   inc_dir + sort_dir + 'shell.hpp',

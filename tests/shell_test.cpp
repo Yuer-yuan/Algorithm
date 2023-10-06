@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <iostream>
+#include <random/random.hpp>
 #include <sort/shell.hpp>
 #include <time/timer.hpp>
 #include <vector>
@@ -92,6 +93,46 @@ TEST(plain_order, input_with_str_vec) {
     std::cout << input[i] << ' ';
   }
   std::cout << '\n';
+
+  for (int i = 0; i < n; ++i) {
+    ASSERT_EQ(input[i], expect[i]);
+  }
+}
+
+TEST(plain_order, input_with_random_vec) {
+  std::vector<int> expect = {10, 10, 10, 9, 9, 8, 8, 7, 7, 6, 4};
+  std::vector<int> input = expect;
+
+  int n = input.size();
+  std::cout << "before shuffle: \n";
+  for (int i = 0; i < n; i++) {
+    std::cout << input[i] << ' ';
+  }
+  std::cout << '\n';
+
+  alg::Timer<HightResolutionClock> timer;
+  timer.start();
+  alg::Random<int>::shuffle(input);
+  timer.stop();
+
+  std::cout << "after shuffle: \n";
+  for (int i = 0; i < n; i++) {
+    std::cout << input[i] << ' ';
+  }
+  std::cout << '\n';
+  std::cout << "shuffle elapsed time: " << timer.miliseconds() << "ms\n";
+
+  timer.reset();
+  auto cmp = [](int const& t1, int const& t2) { return t1 > t2; };
+  alg::Shell<int>::sort(input, cmp);
+  timer.stop();
+
+  std::cout << "after sort: \n";
+  for (int i = 0; i < n; i++) {
+    std::cout << input[i] << ' ';
+  }
+  std::cout << '\n';
+  std::cout << "sort elapsed time: " << timer.miliseconds() << "ms\n";
 
   for (int i = 0; i < n; ++i) {
     ASSERT_EQ(input[i], expect[i]);
