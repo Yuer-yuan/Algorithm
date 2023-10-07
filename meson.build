@@ -21,9 +21,12 @@ random_dir = 'random/'
 alg_lib = shared_library('alg', 
   inc_dir + time_dir + 'timer.hpp',
   inc_dir + random_dir + 'random.hpp',
+  inc_dir + sort_dir + 'common.hpp',
   inc_dir + sort_dir + 'selection.hpp',
   inc_dir + sort_dir + 'insertion.hpp',
   inc_dir + sort_dir + 'shell.hpp',
+  inc_dir + sort_dir + 'merge.hpp',
+  inc_dir + sort_dir + 'quick.hpp',
   inc_dir + 'BST.hpp')
 
 # tests
@@ -54,6 +57,18 @@ shell_test_exe = executable('shell_test',
   link_with: alg_lib,
   dependencies: gtest_dep)
 
+merge_test_exe = executable('merge_test', 
+  test_dir + 'merge_test.cpp', 
+  include_directories: inc_dir,
+  link_with: alg_lib,
+  dependencies: gtest_dep)
+
+quick_test_exe = executable('quick_test', 
+  test_dir + 'quick_test.cpp', 
+  include_directories: inc_dir,
+  link_with: alg_lib,
+  dependencies: gtest_dep)
+
 mytest_exe = executable('mytest', 
   test_dir + 'mytest.cpp',
   dependencies: gtest_dep)
@@ -61,6 +76,8 @@ mytest_exe = executable('mytest',
 test('selection_test', selection_test_exe)
 test('insertion_test', insertion_test_exe)
 test('shell_test', shell_test_exe)
+test('merge_test', merge_test_exe)
+test('quick_test', quick_test_exe)
 test('BST_test', BST_test_exe)
 test('mytest', mytest_exe)
 

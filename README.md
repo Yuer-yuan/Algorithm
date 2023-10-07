@@ -31,17 +31,42 @@ shell sort is an extension of insertion sort. partially sorted array is friendly
  - powers of two minus one: 1, 3, 7, ... -- maybe
  - $3x + 1$: 1, 4, 13, ... -- ok and easy to compute
  - `Sedgewick`: 1, 5, 18, 41, 109, 209: 
- $$
+$$
  \forall i \geq 0, s[i] = \left \{ \begin{array}{rcl}
 9 \times (4^j - 2^j) + 1 & where & j = \lfloor \frac{i}{2} \rfloor & and & i = 2k \\
 4^j - 3 \times 2^j + 1 & where & j = 2 + \lfloor \frac{i}{2} \rfloor & and & i = 2k + 1 \\
  \end{array} \right. \\
- $$
+$$
 
 - proposition: 
   - worst case: $N ^ {\frac{3}{2}}$ (using $3x + 1$) compares
 
+## merge sort
+- basic plan
+  - divide array into two halves 
+  - recursively sort each other
+  - merge two halves
+- proposition
+  - time: $\Theta(N \log{N})$
+    - compares $C(N) \in [\frac{1}{2} N \log{N}, N \log{N}]$, also insensitive to input
+    - access $A(N) = 6N \log{N}$, $2N$ for copy, $2N$ for move back, $2N$ for compares
+  - auxiliary space: $\Theta(N)$
+- merge sort is optimal with respect to compares but not to memory
+- any compare-based algorithm has lower bound $\Theta(N \log{N} )$
+- lower bound may not hold when knowing more information about initial order, distribution or representation of keys
+
+## quick sort
+
+- basic plan
+  - shuffle the array
+  - partition so that, for some j
+    - entry `a[j]` is in place
+    - no larger entry to the left of `a[j]`
+    - no smaller entry to the right of `a[j]`
+  - sort each piece recursively
+
 # reference
 1. [princeton algorithm, 4th edition](https://algs4.cs.princeton.edu/home/)
 2. [latex mathematical sysmbols](https://www.cmor-faculty.rice.edu/~heinken/latex/symbols.pdf)
-
+3. [counting sort](https://www.geeksforgeeks.org/counting-sort/)
+4. [shell sort](https://www.geeksforgeeks.org/shellsort/)

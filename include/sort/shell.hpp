@@ -1,17 +1,17 @@
-#ifndef __ALG_SORT_SORT__
-#define __ALG_SORT_SORT__
+#ifndef __ALG_SORT_SHELL_HPP__
+#define __ALG_SORT_SHELL_HPP__
 
+#include <sort/common.hpp>
 #include <vector>
 
 namespace alg {
 template <typename T>
 class Shell {
+  using Vector = std::vector<T>;
+  using Cmp = bool (*)(T const& t1, T const& t2);
+
  public:
-  static void sort(
-      std::vector<T>& a,
-      bool (*cmp)(T const& t1, T const& t2) = [](T const& t1, T const& t2) {
-        return t1 < t2;
-      }) {
+  static void sort(Vector& a, Cmp cmp = Order<T>::less) {
     int n = a.size();
     int h = 1;
     while (3 * h + 1 < n) {
@@ -28,4 +28,4 @@ class Shell {
   }
 };
 };      // namespace alg
-#endif  // !__ALG_SORT_SORT__
+#endif  // !__ALG_SORT_SHELL_HPP__
