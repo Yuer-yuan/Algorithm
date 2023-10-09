@@ -11,9 +11,24 @@ class Order {
   static constexpr bool (*less)(T const& t1, T const& t2) =
       [](T const& t1, T const& t2) { return t1 < t2; };
 
+  // `t1` <= `t2`
+  static constexpr bool (*less_equal)(T const& t1, T const& t2) =
+      [](T const& t1, T const& t2) { return t1 <= t2; };
+
   // `t1` > `t2`
   static constexpr bool (*greater)(T const& t1, T const& t2) =
       [](T const& t1, T const& t2) { return t1 > t2; };
+
+  // `t1` >= `t2`
+  static constexpr bool (*greater_equal)(T const& t1, T const& t2) =
+      [](T const& t1, T const& t2) { return t1 >= t2; };
+
+  // if `t1` < `t2`, -1;
+  // else if `t1` == `t2`, 0;
+  // else 1; (`t1`)
+  static constexpr int (*default_three_way_comparator)(T const& t1,
+                                                       T const& t2) =
+      [](T const& t1, T const& t2) { return t1 < t2 ? -1 : (t1 > t2 ? 1 : 0); };
 };
 
 };  // namespace alg

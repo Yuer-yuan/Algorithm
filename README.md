@@ -58,12 +58,31 @@ $$
 ## quick sort
 
 - basic plan
-  - shuffle the array
+  - shuffle the array (guarantee performance)
   - partition so that, for some j
     - entry `a[j]` is in place
     - no larger entry to the left of `a[j]`
     - no smaller entry to the right of `a[j]`
   - sort each piece recursively
+
+![image-20231009233608066](/home/guo/mypro/alg/alg/assets/image-20231009233608066.png)
+
+- proposition
+  - best case: compares $C_N \sim N \log{N}$
+  - worst case: compares $C_N \sim \frac{1}{2}N^2$
+  - average case:
+    - for distinct keys, compares $C_n \sim 2N \log{N}$, exchanges $E_N \sim \frac{1}{3} N \log{N}$
+  - in-place
+  - not stable
+- practical improvements
+  - insertion sort small sub-arrays
+  - median of sample (median of `arr[low]`, `arr[mid]` and `arr[high]`)
+  - entropy-optimal sorting: sub-arrays of equal keys often occur. from linearithmic to linear (see below)
+- three-way partion (much faster with large number of duplicate keys)
+
+![image-20231009233906376](/home/guo/mypro/alg/alg/assets/image-20231009233906376.png)
+
+
 
 # reference
 1. [princeton algorithm, 4th edition](https://algs4.cs.princeton.edu/home/)

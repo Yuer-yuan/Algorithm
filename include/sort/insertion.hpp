@@ -11,13 +11,19 @@ class Insertion {
   using Cmp = bool (*)(T const& t1, T const& t2);
 
  public:
-  static void sort(Vector& a, Cmp cmp = Order<T>::less) {
-    int n = a.size();
-    for (int i = 1; i < n; i++) {
-      for (int j = i; j > 0 && cmp(a[j], a[j - 1]); j--) {
+  static void sort(Vector& a,
+                   int const lo,
+                   int const hi,
+                   Cmp cmp = Order<T>::less) {
+    for (int i = lo + 1; i <= hi; i++) {
+      for (int j = i; j > lo && cmp(a[j], a[j - 1]); j--) {
         std::swap(a[j], a[j - 1]);
       }
     }
+  }
+
+  static void sort(Vector& a, Cmp cmp = Order<T>::less) {
+    sort(a, 0, a.size() - 1, cmp);
   }
 };
 };  // namespace alg
