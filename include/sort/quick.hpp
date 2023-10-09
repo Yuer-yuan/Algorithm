@@ -189,6 +189,66 @@ class Quick3Way {
   }
 };
 
+// three way partition
+template <typename T>
+class QuickSelect {
+  using Vector = std::vector<T>;
+  using Cmp = bool (*)(T const& t1, T const& t2);
+
+ public:
+  static T const& select(Vector& a, int k, Cmp cmp = Order<T>::less) {
+    Random<T>::shuffle(a);
+    int lo = 0, hi = a.size() - 1;
+    while (lo < hi) {
+      int j = partition(a, lo, hi, cmp);
+      if (j > k) {
+        hi = j - 1;
+      } else if (j < k) {
+        lo = j + 1;
+      } else {
+        return a[j];
+      }
+    }
+    return a[lo];
+  }
+
+ private:
+  static int partition(Vector& a,
+                       int const lo,
+                       int const hi,
+                       Cmp cmp = Order<T>::less) {
+    int i = lo, j = hi + 1;
+    while (true) {
+      // find item on left to swap
+      // that no less than `a[lo]`
+      while (cmp(a[++i], a[lo])) {
+        if (i == hi) {
+          break;
+        }
+      }
+      // find item on right to swap
+      // that no greater than `a[lo]`
+      while (cmp(a[lo], a[--j])) {
+        // redundant
+        if (j == lo) {
+          break;
+        }
+      }
+      // until pointers cross
+      // `j` is the final position of `a[lo]`
+      if (i >= j) {
+        break;
+      }
+      // s.t.
+      // from `lo` to `j - 1`, no greater than `a[j]`
+      // from `j + 1` to `hi`, no less than `a[j]`
+      std::swap(a[i], a[j]);
+    }
+    std::swap(a[lo], a[j]);
+    return j;
+  }
+};
+
 };  // namespace alg
 
 #endif  // !__ALG_SORT_QUICK_HPP__

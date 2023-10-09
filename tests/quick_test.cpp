@@ -354,6 +354,52 @@ TEST(user_defined_order_for_three_way, input_with_int_vec) {
   }
 }
 
+// test quick select
+TEST(plain_order_for_quick_select, str_vec) {
+  std::vector<std::string> input = {"bug", "bed", "be", "cat", "alpha", "zoo"};
+  int const k = 3;
+  std::string expect = std::string{"bug"};
+
+  int n = input.size();
+  std::cout << "before select: \n";
+  for (int i = 0; i < n; i++) {
+    std::cout << input[i] << ' ';
+  }
+  std::cout << '\n';
+
+  alg::Timer<SystemClock> timer;
+  timer.start();
+  std::string const& output = alg::QuickSelect<std::string>::select(input, k);
+  timer.stop();
+
+  std::cout << "after select the " << k << "th element: " << output
+            << "\nelapsed time: " << timer.seconds() << "s\n";
+  ASSERT_EQ(output, expect);
+}
+
+TEST(user_defined_order_for_quick_select, int_vec) {
+  std::vector<int> input = {6, 4, 10, 9, 7, 7, 8, 10, 8, 9, 10};
+  int const k = 5;
+  int const expect = 8;
+
+  int n = input.size();
+  std::cout << "before select: \n";
+  for (int i = 0; i < n; i++) {
+    std::cout << input[i] << ' ';
+  }
+  std::cout << '\n';
+
+  alg::Timer<SystemClock> timer;
+  timer.start();
+  int const& output =
+      alg::QuickSelect<int>::select(input, k, alg::Order<int>::greater);
+  timer.stop();
+
+  std::cout << "after select the " << k << "th element: " << output
+            << "\nelapsed time: " << timer.seconds() << "s\n";
+  ASSERT_EQ(output, expect);
+}
+
 int main(int argc, char* argv[]) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

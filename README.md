@@ -1,5 +1,61 @@
 [TOC]
+# Analyze algorithms
+
+## reasons to analyze algorithms
+
+- predict performance
+- compare algorithms
+- provide guarantees
+- understand theoretical basic
+- **avoid performance bugs** -- primary reason
+
+## scientific methods applied to analysis of algorithms
+- scientific method
+  - observe some features of the natural world
+  - hypothesize a model that is consistent with the observations
+  - predict events using the hypothesis
+  - verify the predictions by making further observations
+  - validate by repeating until the hypothesis and observations agree
+- principles
+  - experiments must be reproducible
+  - hypothesis must be falsifiable
+- feature of the natural world
+  - computer itself
+
+## mathematical model
+- cost model: use some basic operation as a proxy for running time
+- tilde notation:
+  - estimate running time (or memory) as a function of input size `N`
+  - ignore lower order terms
+
+## order of growth
+- need linear of linearithmic algorithm to keep pace with Moore's law
+
+## theory of algorithms
+- best case: lower bound on cost
+  - determined by "easiest" input
+  - provide a goal for all inputs
+- worst case: upper bound on cost
+  - determined by "most difficult" input
+  - provide a guarantee for all inputs
+- average case: expected cost for random input
+  - need a model for "random" input
+  - provide a way to predict performance
+- goals
+  - **establish "difficulty" of a problem**
+  - **develop "optimal" algorithms**
+- approach
+  - suppress details in Analysis
+  - eliminate variability in input model by focusing on the worst case
+- optimal algorithm
+  - performance guarantee for any input
+  - no algorithm can provide a better performance guarantee
+- upper bound: a specific algorithm
+- lower bound: proof that no algorithm can do better
+- optimal algorithm: lower bound equals upper bound
+
 # sort
+
 ## elementary sorts
 ### selection sort
 at each turn, select the right element from rest, and put it in final position.
@@ -82,9 +138,15 @@ $$
 
 ![image-20231009233906376](/home/guo/mypro/alg/alg/assets/image-20231009233906376.png)
 
+### select
 
+- upper bound $\Theta (N)$ (theoretically proved, but not practical)
+- repeat partitioning on a sub-arrayuntil $k_{th}$ element found
+
+## priority queue
 
 # reference
+
 1. [princeton algorithm, 4th edition](https://algs4.cs.princeton.edu/home/)
 2. [latex mathematical sysmbols](https://www.cmor-faculty.rice.edu/~heinken/latex/symbols.pdf)
 3. [counting sort](https://www.geeksforgeeks.org/counting-sort/)
