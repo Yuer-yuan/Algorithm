@@ -29,6 +29,7 @@ alg_lib = shared_library('alg',
   inc_dir + sort_dir + 'shell.hpp',
   inc_dir + sort_dir + 'merge.hpp',
   inc_dir + sort_dir + 'quick.hpp',
+  inc_dir + sort_dir + 'heap.hpp',
   inc_dir + 'BST.hpp')
 
 # tests
@@ -77,6 +78,12 @@ quick_test_exe = executable('quick_test',
   dependencies: gtest_dep)
 test('quick_test', quick_test_exe)
 
+heap_test_exe = executable('heap_test', 
+  test_dir + 'heap_test.cpp', 
+  include_directories: inc_dir,
+  link_with: alg_lib,
+  dependencies: gtest_dep)
+test('heap_test', heap_test_exe)
 # mytest_exe = executable('mytest', 
 #   test_dir + 'mytest.cpp',
 #   dependencies: gtest_dep)

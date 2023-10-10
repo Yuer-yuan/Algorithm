@@ -141,9 +141,26 @@ $$
 ### select
 
 - upper bound $\Theta (N)$ (theoretically proved, but not practical)
-- repeat partitioning on a sub-arrayuntil $k_{th}$ element found
+- repeat partitioning on a sub-array until $k_{th}$ element found
 
-## priority queue
+## Heap Sort
+
+### priority queue
+
+![image-20231010142307936](/home/guo/mypro/alg/alg/assets/image-20231010142307936.png)
+
+- heap sort is optimal with memory and time
+- proposition
+  - heap construction uses $\leq 2N$ compares
+  - heap sort uses $\leq 2N \log{N}$ compares and exchanges
+- bottom line
+  - inner loop longer quick sort
+  - makes poor use of memory
+  - not stable
+
+## summary
+
+![image-20231010174242103](/home/guo/mypro/alg/alg/assets/image-20231010174242103.png)
 
 # reference
 

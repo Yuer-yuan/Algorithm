@@ -73,7 +73,6 @@ template <typename T>
 class QuickX {
   using Vector = std::vector<T>;
   using Cmp = bool (*)(T const& t1, T const& t2);
-  static constexpr int INSERTION_CUTOFF = 8;
 
  public:
   static void sort(Vector& a, Cmp cmp = Order<T>::less) {
@@ -82,6 +81,8 @@ class QuickX {
   }
 
  private:
+  static constexpr int INSERTION_CUTOFF = 8;
+
   static void sort(Vector& a,
                    int const lo,
                    int const hi,
@@ -92,7 +93,7 @@ class QuickX {
     // insertion sort for small subarrays
     int const n = hi - lo + 1;
     if (n <= INSERTION_CUTOFF) {
-      Insertion<T>::sort(a, lo, hi);
+      Insertion<T>::sort(a, lo, hi, cmp);
       return;
     }
     int const j = partition(a, lo, hi, cmp);
