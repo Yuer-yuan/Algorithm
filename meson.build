@@ -1,12 +1,9 @@
-# author: GuoKunchang
-
 project('alg', 'cpp',
   version: '0.1',
   default_options: [
     'cpp_std=c++20',
-    'warning_level=everything',
-    'werror=true',
-    'b_sanitize=address,undefined,thread,memory,leak',
+    'warning_level=3',
+    'b_sanitize=address,undefined',
     'buildtype=debug'])
 
 # include
@@ -30,7 +27,7 @@ alg_lib = shared_library('alg',
   inc_dir + sort_dir + 'merge.hpp',
   inc_dir + sort_dir + 'quick.hpp',
   inc_dir + sort_dir + 'heap.hpp',
-  inc_dir + 'BST.hpp')
+  inc_dir + search_dir + 'bst.hpp')
 
 # tests
 test_dir = 'tests/'
@@ -49,13 +46,6 @@ insertion_test_exe = executable('insertion_test',
   link_with: alg_lib,
   dependencies: gtest_dep)
 test('insertion_test', insertion_test_exe)
-
-BST_test_exe = executable('BST_test', 
-  test_dir + 'BST_test.cpp', 
-  include_directories: inc_dir,
-  link_with: alg_lib,
-  dependencies: gtest_dep)
-test('BST_test', BST_test_exe)
 
 shell_test_exe = executable('shell_test', 
   test_dir + 'shell_test.cpp', 
@@ -84,10 +74,13 @@ heap_test_exe = executable('heap_test',
   link_with: alg_lib,
   dependencies: gtest_dep)
 test('heap_test', heap_test_exe)
-# mytest_exe = executable('mytest', 
-#   test_dir + 'mytest.cpp',
-#   dependencies: gtest_dep)
-# test('mytest', mytest_exe)
+
+bst_test_exe = executable('bst_test', 
+  test_dir + 'bst_test.cpp', 
+  include_directories: inc_dir,
+  link_with: alg_lib,
+  dependencies: gtest_dep)
+test('bst_test', bst_test_exe)
 
 
 # apps

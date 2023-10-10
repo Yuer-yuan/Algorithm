@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 
-#include <BST.hpp>
 #include <compare>
 #include <iostream>
 #include <ostream>
+#include <search/bst.hpp>
 #include <string>
 #include <tuple>
 #include <utility>
@@ -97,8 +97,7 @@ TEST(del_max, check_with_contains) {
   for (std::tuple<int, int> t : examples) {
     bst.put(std::get<0>(t), std::get<1>(t));
   }
-  std::vector<int> keys;
-  auto print_keys = [&]() {
+  auto print_keys = [](std::vector<int> const& keys) {
     for (int i : keys) {
       std::cout << i << ' ';
     }
@@ -106,54 +105,44 @@ TEST(del_max, check_with_contains) {
   };
 
   EXPECT_TRUE(bst.contains(5));
-  bst.keys(keys);
   std::cout << "before delete max:\n";
-  print_keys();
+  print_keys(bst.keys());
   bst.del_max();
   EXPECT_FALSE(bst.contains(5));
-  bst.keys(keys);
   std::cout << "after delete max:\n";
-  print_keys();
+  print_keys(bst.keys());
 
   EXPECT_TRUE(bst.contains(4));
-  bst.keys(keys);
   std::cout << "before delete max:\n";
-  print_keys();
+  print_keys(bst.keys());
   bst.del_max();
   EXPECT_FALSE(bst.contains(4));
-  bst.keys(keys);
   std::cout << "after delete max:\n";
-  print_keys();
+  print_keys(bst.keys());
 
   EXPECT_TRUE(bst.contains(3));
-  bst.keys(keys);
   std::cout << "before delete max:\n";
-  print_keys();
+  print_keys(bst.keys());
   bst.del_max();
   EXPECT_FALSE(bst.contains(3));
-  bst.keys(keys);
   std::cout << "after delete max:\n";
-  print_keys();
+  print_keys(bst.keys());
 
   EXPECT_TRUE(bst.contains(2));
-  bst.keys(keys);
   std::cout << "before delete max:\n";
-  print_keys();
+  print_keys(bst.keys());
   bst.del_max();
   EXPECT_FALSE(bst.contains(2));
-  bst.keys(keys);
   std::cout << "after delete max:\n";
-  print_keys();
+  print_keys(bst.keys());
 
   EXPECT_TRUE(bst.contains(1));
-  bst.keys(keys);
   std::cout << "before delete max:\n";
-  print_keys();
+  print_keys(bst.keys());
   bst.del_max();
   EXPECT_FALSE(bst.contains(1));
-  bst.keys(keys);
   std::cout << "after delete max:\n";
-  print_keys();
+  print_keys(bst.keys());
 }
 
 TEST(contains, check_existance) {
@@ -181,36 +170,29 @@ TEST(keys, check_one_by_one) {
     bst.put(std::get<0>(t), std::get<1>(t));
   }
 
-  std::vector<int> keys;
-  auto print_keys = [&]() {
+  auto print_keys = [](std::vector<int> const& keys) {
     for (int i : keys) {
       std::cout << i << ' ';
     }
     std::cout << '\n';
   };
 
-  bst.keys(keys);
-  print_keys();
+  print_keys(bst.keys());
 
   bst.del_max();
-  bst.keys(keys);
-  print_keys();
+  print_keys(bst.keys());
 
   bst.del_max();
-  bst.keys(keys);
-  print_keys();
+  print_keys(bst.keys());
 
   bst.del_max();
-  bst.keys(keys);
-  print_keys();
+  print_keys(bst.keys());
 
   bst.del_max();
-  bst.keys(keys);
-  print_keys();
+  print_keys(bst.keys());
 
   bst.del_max();
-  bst.keys(keys);
-  print_keys();
+  print_keys(bst.keys());
 }
 
 TEST(print, test_print) {

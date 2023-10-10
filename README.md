@@ -121,7 +121,7 @@ $$
     - no smaller entry to the right of `a[j]`
   - sort each piece recursively
 
-![image-20231009233608066](/home/guo/mypro/alg/alg/assets/image-20231009233608066.png)
+![image-20231009233608066](./assets/image-20231009233608066.png)
 
 - proposition
   - best case: compares $C_N \sim N \log{N}$
@@ -136,7 +136,7 @@ $$
   - entropy-optimal sorting: sub-arrays of equal keys often occur. from linearithmic to linear (see below)
 - three-way partion (much faster with large number of duplicate keys)
 
-![image-20231009233906376](/home/guo/mypro/alg/alg/assets/image-20231009233906376.png)
+![image-20231009233906376](./assets/image-20231009233906376.png)
 
 ### select
 
@@ -147,7 +147,7 @@ $$
 
 ### priority queue
 
-![image-20231010142307936](/home/guo/mypro/alg/alg/assets/image-20231010142307936.png)
+![image-20231010142307936](./assets/image-20231010142307936.png)
 
 - heap sort is optimal with memory and time
 - proposition
