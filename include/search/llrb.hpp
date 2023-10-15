@@ -1,42 +1,49 @@
-#ifndef __ALG_SEARCH_BST_HPP__
-#define __ALG_SEARCH_BST_HPP__
+#ifndef __ALG_SEARCH_LLRB_HPP
+#define __ALG_SEARCH_LLRB_HPP
 
+#include <algorithm>
+#include <cassert>
+#include <cstdio>
 #include <iostream>
 #include <memory>
 #include <optional>
-#include <ostream>
 #include <queue>
 #include <sort/common.hpp>
 #include <vector>
 
 namespace alg {
 template <typename Key, typename Val>
-class BST {
+class LLRB {
   struct Node;
   using Node = struct Node;
-  using VecKey = std::vector<Key>;
-  using UniPtr = std::unique_ptr<Node>;
+  using Cmp = int (*)(Key const& t1, Key const& t2);
   using OptVal = std::optional<Val>;
   using OptKey = std::optional<Key>;
-  using Cmp = int (*)(Key const& t1, Key const& t2);
+  using UniPtr = std::unique_ptr<Node>;
+  using VecKey = std::vector<Key>;
 
-  // helper class
+  enum Color { Red, Black };
   struct Node {
     Key key_;
     Val val_;
     UniPtr left_, right_;
     int size_;
+    Color col_;
 
-    Node(Key const& key, Val const& val)
-        : key_{key}, val_{val}, left_{nullptr}, right_{nullptr}, size_{1} {}
+    Node(Key const& key, Val const& val, Color col = Color::Black)
+        : key_{key},
+          val_{val},
+          left_{nullptr},
+          right_{nullptr},
+          size_{1},
+          col_{col} {};
   };
 
   UniPtr root_;
   Cmp cmp_;
 
  public:
-  // constructors
-  BST(Cmp cmp = Order<Key>::default_three_way_comparator)
+  LLRB(Cmp cmp = Order<Key>::default_three_way_comparator)
       : root_{nullptr}, cmp_{cmp} {}
 
   // return the size of the tree
@@ -57,6 +64,7 @@ class BST {
   // put key-value pair into the tree
   void put(Key const& key, Val const& val) {
     root_ = put(std::move(root_), key, val);
+    root_->col_ = Color::Black;
   }
 
   // return the value mapped by the key
@@ -75,13 +83,48 @@ class BST {
   }
 
   // delete the key and its value
-  void del(Key const& key) { root_ = del(std::move(root_), key); }
+  void del(Key const& key) {
+    if (!contains(key)) {
+      return;
+    }
+    if (!is_red(root_->left_.get()) && !is_red(root_->right_.get())) {
+      root_->col_ = Color::Red;
+    }
+    root_ = del(std::move(root_), key);
+    if (size() > 0) {
+      root_->col_ = Color::Black;
+    }
+  }
 
   // delete the min_key-value pair
-  void del_min() { root_ = del_min(std::move(root_)); }
+  void del_min() {
+    if (size() == 0) {
+      std::cerr << "Error deleting minimum: red-black tree empty\n";
+      return;
+    }
+    if (!is_red(root_->left_.get()) && !is_red(root_->right_.get())) {
+      root_->col_ = Color::Red;
+    }
+    root_ = del_min(std::move(root_));
+    if (size() > 0) {
+      root_->col_ = Color::Black;
+    }
+  }
 
   // delete the min_key-value pair
-  void del_max() { root_ = del_max(std::move(root_)); }
+  void del_max() {
+    if (size() == 0) {
+      std::cerr << "Error deleting maximum: red-black tree empty\n";
+      return;
+    }
+    if (!is_red(root_->left_.get()) && !is_red(root_->right_.get())) {
+      root_->col_ = Color::Red;
+    }
+    root_ = del_max(std::move(root_));
+    if (size() > 0) {
+      root_->col_ = Color::Black;
+    }
+  }
 
   // get the min key
   OptKey min() const {
@@ -181,24 +224,18 @@ class BST {
 
   UniPtr put(UniPtr x, Key const& key, Val const& val) {
     if (x == nullptr) {
-      return std::make_unique<Node>(key, val);
+      return std::make_unique<Node>(key, val, Color::Red);
     }
     int c = cmp_(key, x->key_);
-    // less, put to `left_`
     if (c < 0) {
       x->left_ = put(std::move(x->left_), key, val);
-      x->size_++;
-    }
-    // greater, put to `right`
-    else if (c > 0) {
+    } else if (c > 0) {
       x->right_ = put(std::move(x->right_), key, val);
-      x->size_++;
-    }
-    // equal, update `val_`
-    else {
+    } else {
       x->val_ = val;
     }
-    return x;
+
+    return balance(std::move(x));
   }
 
   Node* get(Node* x, Key const& key) const {
@@ -216,54 +253,61 @@ class BST {
   }
 
   UniPtr del(UniPtr x, Key const& key) {
-    if (x == nullptr) {
-      return nullptr;
-    }
-    int c = cmp_(key, x->key_);
-    if (c < 0) {
+    if (cmp_(key, x->key_) < 0) {
+      if (!is_red(x->left_.get()) && (x->left_ != nullptr) &&
+          !is_red(x->left_->left_.get())) {
+        x = move_red_left(std::move(x));
+      }
       x->left_ = del(std::move(x->left_), key);
-    } else if (c > 0) {
-      x->right_ = del(std::move(x->right_), key);
     } else {
-      if (x->left_ == nullptr) {
-        return std::move(x->right_);
+      if (is_red(x->left_.get())) {
+        x = rotate_right(std::move(x));
       }
-      if (x->right_ == nullptr) {
-        return std::move(x->left_);
+      if ((cmp_(key, x->key_) == 0) && (x->right_ == nullptr)) {
+        return nullptr;
       }
-      // replace with successor
-      Node* min_node = min(x->right_.get());
-      UniPtr new_x = std::make_unique<Node>(min_node->key_, min_node->val_);
-      new_x->left_ = std::move(x->left_);
-      new_x->right_ = std::move(del_min(std::move(x->right_)));
-      x = std::move(new_x);
+      if (!is_red(x->right_.get()) && (x->right_ != nullptr) &&
+          !is_red(x->right_->left_.get())) {
+        x = move_red_right(std::move(x));
+      }
+      if (cmp_(key, x->key_) == 0) {
+        Node* h = min(x->right_.get());
+        x->key_ = h->key_;
+        x->val_ = h->val_;
+        x->right_ = del_min(std::move(x->right_));
+      } else {
+        x->right_ = del(std::move(x->right_), key);
+      }
     }
-    x->size_ = size(x->left_.get()) + size(x->right_.get()) + 1;
-    return x;
+    return balance(std::move(x));
   }
 
   UniPtr del_min(UniPtr x) {
-    if (x == nullptr) {
+    // since left-leaning, no left means a single node
+    if (x->left_ == nullptr) {
       return nullptr;
     }
-    if (x->left_ == nullptr) {
-      return std::move(x->right_);
+    if (!is_red(x->left_.get()) && (x->left_ != nullptr) &&
+        !is_red(x->left_->left_.get())) {
+      x = move_red_left(std::move(x));
     }
     x->left_ = del_min(std::move(x->left_));
-    x->size_ = 1 + size(x->left_.get()) + size(x->right_.get());
-    return x;
+    return balance(std::move(x));
   }
 
   UniPtr del_max(UniPtr x) {
-    if (x == nullptr) {
-      return nullptr;
+    if (is_red(x->left_.get())) {
+      x = rotate_right(std::move(x));
     }
     if (x->right_ == nullptr) {
-      return std::move(x->left_);
+      return nullptr;
+    }
+    if (!is_red(x->right_.get()) && (x->right_ != nullptr) &&
+        !is_red(x->right_->left_.get())) {
+      x = move_red_right(std::move(x));
     }
     x->right_ = del_max(std::move(x->right_));
-    x->size_ = 1 + size(x->left_.get()) + size(x->right_.get());
-    return x;
+    return balance(std::move(x));
   }
 
   Node* min(Node* x) const {
@@ -423,6 +467,99 @@ class BST {
     }
   };
 
-};  // class BST
-}  // namespace alg
-#endif  // !__ALG_SEARCH_BST_HPP
+  bool is_red(Node* x) const {
+    if (x == nullptr) {
+      return false;
+    }
+    return x->col_ == Color::Red;
+  }
+
+  UniPtr rotate_left(UniPtr x) {
+    /* assert(("Error rotating left: null tree\n") && (x != nullptr)); */
+    /* assert(("Error rotating left: left of root is not black\n") && */
+    /*        (!is_red(x->left_.get()))); */
+    /* assert(("Error rotating left: right of root is not red\n") && */
+    /*        (is_red(x->right_.get()))); */
+
+    UniPtr h = std::move(x->right_);
+    h->col_ = x->col_;
+    h->size_ = x->size_;
+    x->col_ = Color::Red;
+    x->right_ = std::move(h->left_);
+    x->size_ = 1 + size(x->left_.get()) + size(x->right_.get());
+    h->left_ = std::move(x);
+    return h;
+  }
+
+  UniPtr rotate_right(UniPtr x) {
+    /* assert(("Error rotating right: null tree\n") && (x != nullptr)); */
+    /* assert(("Error rotating right: left of root is not red\n") && */
+    /*        (is_red(x->left_.get()))); */
+    /* assert(("Error rotating right: right of root is not black\n") && */
+    /*        (!is_red(x->right_.get()))); */
+
+    UniPtr h = std::move(x->left_);
+    h->col_ = x->col_;
+    h->size_ = x->size_;
+    x->col_ = Color::Red;
+    x->left_ = std::move(h->right_);
+    x->size_ = 1 + size(x->left_.get()) + size(x->right_.get());
+    h->right_ = std::move(x);
+    return h;
+  }
+
+  inline Color flip_color(Color col) const {
+    return col == Color::Black ? Color::Red : Color::Black;
+  }
+
+  void flip_colors(Node* x) {
+    /* assert(("Error fliping colors: null tree\n") && (x != nullptr)); */
+    /* assert(("Error fliping colors: left of root is not red\n") && */
+    /*        (is_red(x->left_.get()))); */
+    /* assert(("Error fliping colors: right of root is not red\n") && */
+    /*        (is_red(x->right_.get()))); */
+
+    x->col_ = flip_color(x->col_);
+    x->left_->col_ = flip_color(x->left_->col_);
+    x->right_->col_ = flip_color(x->right_->col_);
+  }
+
+  UniPtr balance(UniPtr x) {
+    // fix up right leaning lines
+    // its a finite state machine: left->right->flip
+    if (is_red(x->right_.get()) && !is_red(x->left_.get())) {
+      x = rotate_left(std::move(x));
+    }
+    if (is_red(x->left_.get()) && (x->left_ != nullptr) &&
+        is_red(x->left_->left_.get())) {
+      x = rotate_right(std::move(x));
+    }
+    if (is_red(x->left_.get()) && is_red(x->right_.get())) {
+      flip_colors(x.get());
+    }
+    x->size_ = 1 + size(x->left_.get()) + size(x->right_.get());
+    return x;
+  }
+
+  UniPtr move_red_left(UniPtr x) {
+    flip_colors(x.get());
+    if ((x->right_ != nullptr) && is_red(x->right_->left_.get())) {
+      x->right_ = rotate_right(std::move(x->right_));
+      x = rotate_left(std::move(x));
+      flip_colors(x.get());
+    }
+    return x;
+  }
+
+  UniPtr move_red_right(UniPtr x) {
+    flip_colors(x.get());
+    if ((x->left_ != nullptr) && is_red(x->left_->left_.get())) {
+      x->left_ = rotate_left(std::move(x->left_));
+      x = rotate_right(std::move(x));
+      flip_colors(x.get());
+    }
+    return x;
+  }
+};
+};      // namespace alg
+#endif  // !__ALG_SEARCH_LLRB_HPP

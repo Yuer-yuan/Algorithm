@@ -4,7 +4,8 @@ project('alg', 'cpp',
     'cpp_std=c++20',
     'warning_level=3',
     'b_sanitize=address,undefined',
-    'buildtype=debug'])
+    'buildtype=debug'],
+)
 
 # include
 inc_dir = 'include/'
@@ -27,7 +28,9 @@ alg_lib = shared_library('alg',
   inc_dir + sort_dir + 'merge.hpp',
   inc_dir + sort_dir + 'quick.hpp',
   inc_dir + sort_dir + 'heap.hpp',
-  inc_dir + search_dir + 'bst.hpp')
+  inc_dir + search_dir + 'bst.hpp',
+  inc_dir + search_dir + 'llrb.hpp',
+)
 
 # tests
 test_dir = 'tests/'
@@ -37,7 +40,8 @@ selection_test_exe = executable('selection_test',
   test_dir + 'selection_test.cpp', 
   include_directories: inc_dir,
   link_with: alg_lib,
-  dependencies: gtest_dep)
+  dependencies: gtest_dep,
+)
 test('selection_test', selection_test_exe)
 
 insertion_test_exe = executable('insertion_test', 
@@ -81,6 +85,14 @@ bst_test_exe = executable('bst_test',
   link_with: alg_lib,
   dependencies: gtest_dep)
 test('bst_test', bst_test_exe)
+
+llrb_test_exe = executable('llrb_test', 
+  test_dir + 'llrb_test.cpp', 
+  include_directories: inc_dir,
+  link_with: alg_lib,
+  dependencies: gtest_dep
+)
+test('llrb_test', llrb_test_exe)
 
 
 # apps

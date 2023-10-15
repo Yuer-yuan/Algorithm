@@ -162,6 +162,37 @@ $$
 
 ![image-20231010174242103](/home/guo/mypro/alg/alg/assets/image-20231010174242103.png)
 
+## search
+
+### binary search tree
+
+![image-20231011072355176](./assets/image-20231011072355176.png)
+
+### balanced search trees
+
+#### 2-3 search tree
+- by maintaining two-nodes and three-nodes, each path from root to null link has same length
+- proposition
+  - height
+    - worst: all 2-nodes $\log_2 N$
+    - best: all 3-nodes $\log_3 N$
+  - guaranteed logarithmic performance for search and insert
+- cumbersome to implement
+
+#### red-black BST
+- left-leaning red-black BSTs
+- use "internal" left-leaning links as glue for 3-nodes
+  - red links "glue" nodes within a 3-node
+  - black links connect 2-nodes and 3-nodes
+  - $s.t.$
+    - no node has two red links connected to it
+    - every path from root to null link has the same number of black links (perfect black balance)
+    - red links lean left
+
+![image-20231014152316059](./assets/image-20231014152316059.png)
+
+#### b-tree
+
 # reference
 
 1. [princeton algorithm, 4th edition](https://algs4.cs.princeton.edu/home/)
