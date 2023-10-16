@@ -221,17 +221,14 @@ TEST(all, random_test_with_inner_check) {
   int const lo = 1000;
   int const hi = 10000;
 
-  auto genarator = alg::RandIntGen<int>(lo, hi);
-  int const capacity = genarator.gen();
+  auto generator = alg::RandIntGen<int>(lo, hi);
+  int const capacity = generator.gen();
   std::cout << "capacity: " << capacity << '\n';
-
-  auto input = std::vector<int>();
 
   // test put
   for (int i = 0; i < capacity; i++) {
-    int const integer = genarator.gen();
+    int const integer = generator.gen();
     bst.put(integer, 0);
-    input.push_back(integer);
   }
 
   // test del min
@@ -250,11 +247,50 @@ TEST(all, random_test_with_inner_check) {
 
   // test del
   for (int i = 0; i < capacity / 10; i++) {
-    int const integer = genarator.gen();
+    int const integer = generator.gen();
     if (bst.contains(integer)) {
       bst.del(integer);
     }
     ASSERT_FALSE(bst.contains(integer));
+  }
+}
+
+TEST(ALL, test_single_element) {
+  int const lo = 1000;
+  int const hi = 10000;
+  auto generator = alg::RandIntGen<int>(lo, hi);
+
+  // test single del_min
+  {
+    alg::LLRB<int, int> bst;
+    int const input = generator.gen();
+    bst.put(input, 0);
+    ASSERT_TRUE(bst.contains(input));
+    bst.del_min();
+    ASSERT_FALSE(bst.contains(input));
+    bst.del_min();  // nothing happen
+  }
+
+  // test single del_max
+  {
+    alg::LLRB<int, int> bst;
+    int const input = generator.gen();
+    bst.put(input, 0);
+    ASSERT_TRUE(bst.contains(input));
+    bst.del_max();
+    ASSERT_FALSE(bst.contains(input));
+    bst.del_max();  // nothing happen
+  }
+
+  // test single del
+  {
+    alg::LLRB<int, int> bst;
+    int const input = generator.gen();
+    bst.put(input, 0);
+    ASSERT_TRUE(bst.contains(input));
+    bst.del(input);
+    ASSERT_FALSE(bst.contains(input));
+    bst.del(input + 1);  // nothing happen
   }
 }
 

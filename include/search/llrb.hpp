@@ -1,3 +1,14 @@
+/*
+ * left-leaning red-black tree
+ *
+ * guaranteed time bound of \Theta(n) of
+ * `put`, `get` and `del` (also `del_min` and `del_max`)
+ *
+ * Resources:
+ * 1. https://algs4.cs.princeton.edu/33balanced/
+ * 2. https://sedgewick.io/wp-content/themes/sedgewick/papers/2008LLRB.pdf
+ *
+ */
 #ifndef __ALG_SEARCH_LLRB_HPP
 #define __ALG_SEARCH_LLRB_HPP
 
@@ -87,8 +98,11 @@ class LLRB {
   // delete the key and its value
   void del(Key const& key) {
     if (!contains(key)) {
+      std::cout
+          << "Cannot delete key-value from red-black tree: key not found\n";
       return;
     }
+    // form a 4-node
     if (!is_red(root_->left_.get()) && !is_red(root_->right_.get())) {
       root_->col_ = Color::Red;
     }
@@ -97,13 +111,13 @@ class LLRB {
       root_->col_ = Color::Black;
     }
 
-    /* assert(check()); */
+    assert(check());
   }
 
   // delete the min_key-value pair
   void del_min() {
     if (size() == 0) {
-      std::cerr << "Error deleting minimum: red-black tree empty\n";
+      std::cout << "Cannot delete the minimum: red-black tree empty\n";
       return;
     }
     if (!is_red(root_->left_.get()) && !is_red(root_->right_.get())) {
@@ -120,7 +134,7 @@ class LLRB {
   // delete the max_key-value pair
   void del_max() {
     if (size() == 0) {
-      std::cerr << "Error deleting maximum: red-black tree empty\n";
+      std::cout << "Cannot delete maximum: red-black tree empty\n";
       return;
     }
     if (!is_red(root_->left_.get()) && !is_red(root_->right_.get())) {
@@ -265,20 +279,24 @@ class LLRB {
 
   UniPtr del(UniPtr x, Key const& key) {
     if (cmp_(key, x->key_) < 0) {
-      if (!is_red(x->left_.get()) && (x->left_ != nullptr) &&
-          !is_red(x->left_->left_.get())) {
+      // delete from left subtree, like delete minimum
+      if (!is_red(x->left_.get()) && !is_red(x->left_->left_.get())) {
         x = move_red_left(std::move(x));
       }
       x->left_ = del(std::move(x->left_), key);
     } else {
+      // delete from right subtree, like delete maximum
       if (is_red(x->left_.get())) {
         x = rotate_right(std::move(x));
       }
+      // we have checked the existence of key,
+      // therefore, this case is the boarder
+      // case that key does not match and right grand child does not existed is
+      // not possible
       if ((cmp_(key, x->key_) == 0) && (x->right_ == nullptr)) {
         return nullptr;
       }
-      if (!is_red(x->right_.get()) && (x->right_ != nullptr) &&
-          !is_red(x->right_->left_.get())) {
+      if (!is_red(x->right_.get()) && !is_red(x->right_->left_.get())) {
         x = move_red_right(std::move(x));
       }
       if (cmp_(key, x->key_) == 0) {
@@ -298,8 +316,8 @@ class LLRB {
     if (x->left_ == nullptr) {
       return nullptr;
     }
-    if (!is_red(x->left_.get()) && (x->left_ != nullptr) &&
-        !is_red(x->left_->left_.get())) {
+    // left if 2-node
+    if (!is_red(x->left_.get()) && !is_red(x->left_->left_.get())) {
       x = move_red_left(std::move(x));
     }
     x->left_ = del_min(std::move(x->left_));
@@ -314,8 +332,8 @@ class LLRB {
     if (x->right_ == nullptr) {
       return nullptr;
     }
-    if (!is_red(x->right_.get()) && (x->right_ != nullptr) &&
-        !is_red(x->right_->left_.get())) {
+    // right is 2-node
+    if (!is_red(x->right_.get()) && !is_red(x->right_->left_.get())) {
       x = move_red_right(std::move(x));
     }
     x->right_ = del_max(std::move(x->right_));
@@ -542,8 +560,7 @@ class LLRB {
     if (is_red(x->right_.get()) && !is_red(x->left_.get())) {
       x = rotate_left(std::move(x));
     }
-    if (is_red(x->left_.get()) && (x->left_ != nullptr) &&
-        is_red(x->left_->left_.get())) {
+    if (is_red(x->left_.get()) && is_red(x->left_->left_.get())) {
       x = rotate_right(std::move(x));
     }
     if (is_red(x->left_.get()) && is_red(x->right_.get())) {
@@ -554,8 +571,10 @@ class LLRB {
   }
 
   UniPtr move_red_left(UniPtr x) {
+    // get a 4- or 5-node
     flip_colors(x.get());
-    if ((x->right_ != nullptr) && is_red(x->right_->left_.get())) {
+    if (is_red(x->right_->left_.get())) {
+      // split 5-node, pass x down to left
       x->right_ = rotate_right(std::move(x->right_));
       x = rotate_left(std::move(x));
       flip_colors(x.get());
@@ -564,8 +583,10 @@ class LLRB {
   }
 
   UniPtr move_red_right(UniPtr x) {
+    // get a 4- or 5- node
     flip_colors(x.get());
-    if ((x->left_ != nullptr) && is_red(x->left_->left_.get())) {
+    if (is_red(x->left_->left_.get())) {
+      // spilt 5-node, pass x down to right
       x = rotate_right(std::move(x));
       flip_colors(x.get());
     }
