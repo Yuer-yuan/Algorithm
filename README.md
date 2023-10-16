@@ -193,6 +193,13 @@ $$
 
 #### b-tree
 
+### hash tables
+
+1. mapping
+2. collision-resolution: separate chaining and line probing
+
+
+
 # reference
 
 1. [princeton algorithm, 4th edition](https://algs4.cs.princeton.edu/home/)

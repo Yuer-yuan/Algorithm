@@ -65,6 +65,8 @@ class LLRB {
   void put(Key const& key, Val const& val) {
     root_ = put(std::move(root_), key, val);
     root_->col_ = Color::Black;
+
+    /* assert(check()); */
   }
 
   // return the value mapped by the key
@@ -94,6 +96,8 @@ class LLRB {
     if (size() > 0) {
       root_->col_ = Color::Black;
     }
+
+    /* assert(check()); */
   }
 
   // delete the min_key-value pair
@@ -109,9 +113,11 @@ class LLRB {
     if (size() > 0) {
       root_->col_ = Color::Black;
     }
+
+    /* assert(check()); */
   }
 
-  // delete the min_key-value pair
+  // delete the max_key-value pair
   void del_max() {
     if (size() == 0) {
       std::cerr << "Error deleting maximum: red-black tree empty\n";
@@ -124,6 +130,8 @@ class LLRB {
     if (size() > 0) {
       root_->col_ = Color::Black;
     }
+
+    /* assert(check()); */
   }
 
   // get the min key
@@ -165,7 +173,10 @@ class LLRB {
     }
     Node* x = select(root_.get(), rank);
     // x should not be null
-    return x == nullptr ? std::nullopt : x->val_;
+    if (x == nullptr) {
+      return std::nullopt;
+    }
+    return x->key_;
   };
 
   // return the number of keys strictly smaller than given
@@ -299,6 +310,7 @@ class LLRB {
     if (is_red(x->left_.get())) {
       x = rotate_right(std::move(x));
     }
+    // single element
     if (x->right_ == nullptr) {
       return nullptr;
     }
@@ -405,7 +417,7 @@ class LLRB {
     }
     // `key` is bigger than current
     // all left and current count, then add those on the right
-    return size(x->left_.get()) + 1 + rank(x->right_.get());
+    return size(x->left_.get()) + 1 + rank(x->right_.get(), key);
   }
 
   void keys(Node* x, VecKey& vk, Key const& lo, Key const& hi) const {
@@ -554,11 +566,117 @@ class LLRB {
   UniPtr move_red_right(UniPtr x) {
     flip_colors(x.get());
     if ((x->left_ != nullptr) && is_red(x->left_->left_.get())) {
-      x->left_ = rotate_left(std::move(x->left_));
       x = rotate_right(std::move(x));
       flip_colors(x.get());
     }
     return x;
+  }
+
+  bool check() {
+    bool ok = true;
+    if (!is_bst()) {
+      ok = false;
+      std::cout << "not in symmetric order\n";
+    }
+    if (!is_size_consistent()) {
+      ok = false;
+      std::cout << "subtree counts not consistent\n";
+    }
+    if (!is_rank_consistent()) {
+      ok = false;
+      std::cout << "ranks not consistent\n";
+    }
+    if (!is_two_three_tree()) {
+      ok = false;
+      std::cout << "not a 2-3 tree\n";
+    }
+    if (!is_balanced()) {
+      ok = false;
+      std::cout << "not balanced\n";
+    }
+    return ok;
+  }
+
+  bool is_bst() { return is_bst(root_.get(), std::nullopt, std::nullopt); }
+
+  bool is_bst(Node* x, OptKey const min_key, OptKey const max_key) {
+    if (x == nullptr) {
+      return true;
+    }
+    if (min_key.has_value() && (cmp_(x->key_, min_key.value()) <= 0)) {
+      return false;
+    }
+    if (max_key.has_value() && (cmp_(x->key_, max_key.value()) >= 0)) {
+      return false;
+    }
+    return is_bst(x->left_.get(), min_key, x->key_) &&
+           is_bst(x->right_.get(), x->key_, max_key);
+  }
+
+  bool is_size_consistent() { return true; }
+
+  bool is_size_consistent(Node* x) {
+    if (x == nullptr) {
+      return true;
+    }
+    if (x->size_ != (1 + size(x->left_.get()) + size(x->right_.get()))) {
+      return false;
+    }
+    return is_size_consistent(x->left_.get()) &&
+           is_size_consistent(x->right_.get());
+  }
+
+  bool is_rank_consistent() {
+    for (int i = 0; i < size(); i++) {
+      if (i != rank(select(i).value())) {
+        return false;
+      }
+    }
+    for (Key const key : keys()) {
+      if (cmp_(key, select(rank(key)).value()) != 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  bool is_two_three_tree() { return is_two_three_tree(root_.get()); }
+
+  bool is_two_three_tree(Node* x) {
+    if (x == nullptr) {
+      return true;
+    }
+    if (is_red(x->right_.get())) {
+      return false;
+    }
+    if (is_red(x->left_.get()) && is_red(x->right_.get())) {
+      return false;
+    }
+    return is_two_three_tree(x->left_.get()) &&
+           is_two_three_tree(x->right_.get());
+  }
+
+  bool is_balanced() {
+    int black = 0;
+    Node* x = root_.get();
+    while (x != nullptr) {
+      if (!is_red(x)) {
+        black++;
+      }
+      x = x->left_.get();
+    }
+    return is_balanced(root_.get(), black);
+  }
+
+  bool is_balanced(Node* x, int black) {
+    if (x == nullptr) {
+      return black == 0;
+    }
+    if (!is_red(x)) {
+      black--;
+    }
+    return is_balanced(x->left_.get(), black) &&
+           is_balanced(x->right_.get(), black);
   }
 };
 };      // namespace alg

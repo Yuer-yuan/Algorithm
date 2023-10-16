@@ -122,7 +122,10 @@ class BST {
     }
     Node* x = select(root_.get(), rank);
     // x should not be null
-    return x == nullptr ? std::nullopt : x->val_;
+    if (x == nullptr) {
+      return std::nullopt;
+    }
+    return x->key_;
   };
 
   // return the number of keys strictly smaller than given

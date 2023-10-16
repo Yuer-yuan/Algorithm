@@ -6,6 +6,7 @@
 #include <tuple>
 #include <utility>
 #include <vector>
+#include "random/random.hpp"
 
 TEST(put, check_with_size) {
   alg::LLRB<int, int> bst;
@@ -213,6 +214,48 @@ TEST(print, test_print) {
   bst.del_max();
   bst.print(std::cout);
   bst.del_max();
+}
+
+TEST(all, random_test_with_inner_check) {
+  alg::LLRB<int, int> bst;
+  int const lo = 1000;
+  int const hi = 10000;
+
+  auto genarator = alg::RandIntGen<int>(lo, hi);
+  int const capacity = genarator.gen();
+  std::cout << "capacity: " << capacity << '\n';
+
+  auto input = std::vector<int>();
+
+  // test put
+  for (int i = 0; i < capacity; i++) {
+    int const integer = genarator.gen();
+    bst.put(integer, 0);
+    input.push_back(integer);
+  }
+
+  // test del min
+  for (int i = 0; i < capacity / 10; i++) {
+    int const min_key = bst.min().value();
+    bst.del_min();
+    ASSERT_FALSE(bst.contains(min_key));
+  }
+
+  // test del max
+  for (int i = 0; i < capacity / 10; i++) {
+    int const max_key = bst.max().value();
+    bst.del_max();
+    ASSERT_FALSE(bst.contains(max_key));
+  }
+
+  // test del
+  for (int i = 0; i < capacity / 10; i++) {
+    int const integer = genarator.gen();
+    if (bst.contains(integer)) {
+      bst.del(integer);
+    }
+    ASSERT_FALSE(bst.contains(integer));
+  }
 }
 
 class WrapClass {

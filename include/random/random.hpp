@@ -32,5 +32,24 @@ class Random {
     }
   }
 };
+
+/*
+ * type has to be supported by `uniform_int_distribution`
+ * https://en.cppreference.com/w/cpp/numeric/random/uniform_int_distribution
+ */
+template <typename T = int>
+class RandIntGen {
+  std::random_device rand_dev_;
+  std::mt19937 generator_;
+  std::uniform_int_distribution<T> distr_;
+
+ public:
+  RandIntGen(T const lo, T const hi)
+      : generator_(rand_dev_()), distr_(lo, hi) {}
+
+  T gen() { return distr_(generator_); }
+
+  void rest(T const lo, T const hi) { distr_(lo, hi); }
+};
 };      // namespace alg
 #endif  // !__ALG_RANDONM_RANDOM__
