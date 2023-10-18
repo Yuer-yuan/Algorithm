@@ -11,17 +11,17 @@
 namespace alg {
 template <typename T>
 struct Hash {
-  static int hash(T const&) = delete;
+  constexpr static int hash(T const&) = delete;
 };
 
 template <>
 struct Hash<int> {
-  static int hash(int const& t) { return t; }
+  constexpr static int hash(int const& t) { return t; }
 };
 
 template <>
 struct Hash<int64_t> {
-  static int hash(int64_t const& t) { return (int)((t >> 32) ^ t); }
+  constexpr static int hash(int64_t const& t) { return (int)((t >> 32) ^ t); }
 };
 
 template <>

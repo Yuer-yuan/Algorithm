@@ -32,6 +32,7 @@ alg_lib = shared_library('alg',
   inc_dir + search_dir + 'bst.hpp',
   inc_dir + search_dir + 'llrb.hpp',
   inc_dir + search_dir + 'seperate_chaining.hpp',
+  inc_dir + search_dir + 'linear_probing.hpp',
 )
 
 # tests
@@ -103,4 +104,13 @@ seperate_chaining_test_exe = executable('seperate_chaining_test',
   dependencies: gtest_dep
 )
 test('seperate_chaining_test', seperate_chaining_test_exe)
+
+linear_probing_test_exe = executable('linear_probing_test', 
+  test_dir + 'linear_probing_test.cpp', 
+  include_directories: inc_dir,
+  link_with: alg_lib,
+  dependencies: gtest_dep
+)
+test('linear_probing_test', linear_probing_test_exe)
+
 # apps

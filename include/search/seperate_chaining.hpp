@@ -149,6 +149,7 @@ class SeperateChaining {
       VecKey tmp = st_[i].keys();
       vk.insert(vk.end(), tmp.begin(), tmp.end());
     }
+    return vk;
   }
 
  private:

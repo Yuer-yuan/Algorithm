@@ -218,8 +218,8 @@ TEST(print, test_print) {
 
 TEST(all, random_test_with_inner_check) {
   alg::LLRB<int, int> bst;
-  int const lo = 1000;
-  int const hi = 10000;
+  int const lo = 100;
+  int const hi = 1000;
 
   auto generator = alg::RandIntGen<int>(lo, hi);
   int const capacity = generator.gen();

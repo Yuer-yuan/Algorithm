@@ -1,13 +1,14 @@
 #include <gtest/gtest.h>
 #include <functional>
+#include <limits>
 #include <random/random.hpp>
 #include <search/common.hpp>
-#include <search/seperate_chaining.hpp>
+#include <search/linear_probing.hpp>
 #include "sort/quick.hpp"
 
 TEST(put_and_get, small_case) {
   auto hash = alg::Hash<int>::hash;
-  alg::SeperateChaining<int, int> st(hash);
+  alg::LinearProbing<int, int> st(hash);
   std::vector<std::tuple<int, int>> input = {{1, 0}, {2, 0}, {3, 0}};
   int cnt = 0;
 
@@ -40,7 +41,7 @@ TEST(put_and_get, small_case) {
 }
 
 TEST(del, small_case) {
-  alg::SeperateChaining<int, int> st(alg::Hash<int>::hash);
+  alg::LinearProbing<int, int> st(alg::Hash<int>::hash);
   std::vector<std::tuple<int, int>> input = {{1, 0}, {2, 0}, {3, 0}};
   int cnt = 0;
 
@@ -66,7 +67,7 @@ TEST(del, small_case) {
 }
 
 TEST(all, random) {
-  auto st = alg::SeperateChaining<int, int>(alg::Hash<int>::hash);
+  auto st = alg::LinearProbing<int, int>(alg::Hash<int>::hash);
   int const lo = 1000, hi = 10000;
   int const val_lo = 0, val_hi = std::numeric_limits<int>::max();
   auto generator = alg::RandIntGen<int>(lo, hi);
