@@ -28,8 +28,10 @@ alg_lib = shared_library('alg',
   inc_dir + sort_dir + 'merge.hpp',
   inc_dir + sort_dir + 'quick.hpp',
   inc_dir + sort_dir + 'heap.hpp',
+  inc_dir + sort_dir + 'common.hpp',
   inc_dir + search_dir + 'bst.hpp',
   inc_dir + search_dir + 'llrb.hpp',
+  inc_dir + search_dir + 'seperate_chaining.hpp',
 )
 
 # tests
@@ -94,5 +96,11 @@ llrb_test_exe = executable('llrb_test',
 )
 test('llrb_test', llrb_test_exe)
 
-
+seperate_chaining_test_exe = executable('seperate_chaining_test', 
+  test_dir + 'seperate_chaining_test.cpp', 
+  include_directories: inc_dir,
+  link_with: alg_lib,
+  dependencies: gtest_dep
+)
+test('seperate_chaining_test', seperate_chaining_test_exe)
 # apps

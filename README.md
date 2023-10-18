@@ -198,6 +198,31 @@ $$
 1. mapping
 2. collision-resolution: separate chaining and line probing
 
+#### mapping -- hashing function
+
+- requirements
+
+  1. efficient to compute
+
+  2. consistent -- instance equality -> hash-code equality
+
+  3. uniformly distribute the keys
+
+- different types should have different hash functions
+
+- positive integers: modular hashing $k \% M$
+  - however, values not disperse evenly
+  - $M$ is often prime
+- floating-point numbers: modular hashing function on binary representations of them
+- string: treat as N-digit base-R integer `hash = ((R * hash) + s[i]) % M`
+  - if computing hash-code is prohibitive, software caching it
+- compound keys: `hash = (((day * R + month) % M) * R + year) % M`, if `R` is small, cost of modular by `M` can be eliminated
+
+#### collision-resolution
+
+- separate chaining -- buckets + lists
+- 
+
 
 
 # reference
