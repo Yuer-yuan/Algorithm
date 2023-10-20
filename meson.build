@@ -11,28 +11,29 @@ project('alg', 'cpp',
 inc_dir = 'include/'
 
 # library
-sort_dir = 'sort/'
-search_dir = 'search/'
-graph_dir = 'graph/'
-string_dir = 'string/'
-time_dir = 'time/'
-random_dir = 'random/'
+sort_dir = inc_dir + 'sort/'
+search_dir = inc_dir + 'search/'
+graph_dir = inc_dir + 'graph/'
+string_dir = inc_dir + 'string/'
+time_dir = inc_dir + 'time/'
+random_dir = inc_dir + 'random/'
 
 alg_lib = shared_library('alg', 
-  inc_dir + time_dir + 'timer.hpp',
-  inc_dir + random_dir + 'random.hpp',
-  inc_dir + sort_dir + 'common.hpp',
-  inc_dir + sort_dir + 'selection.hpp',
-  inc_dir + sort_dir + 'insertion.hpp',
-  inc_dir + sort_dir + 'shell.hpp',
-  inc_dir + sort_dir + 'merge.hpp',
-  inc_dir + sort_dir + 'quick.hpp',
-  inc_dir + sort_dir + 'heap.hpp',
-  inc_dir + sort_dir + 'common.hpp',
-  inc_dir + search_dir + 'bst.hpp',
-  inc_dir + search_dir + 'llrb.hpp',
-  inc_dir + search_dir + 'seperate_chaining.hpp',
-  inc_dir + search_dir + 'linear_probing.hpp',
+  time_dir + 'timer.hpp',
+  random_dir + 'random.hpp',
+  sort_dir + 'common.hpp',
+  sort_dir + 'selection.hpp',
+  sort_dir + 'insertion.hpp',
+  sort_dir + 'shell.hpp',
+  sort_dir + 'merge.hpp',
+  sort_dir + 'quick.hpp',
+  sort_dir + 'heap.hpp',
+  sort_dir + 'common.hpp',
+  search_dir + 'bst.hpp',
+  search_dir + 'llrb.hpp',
+  search_dir + 'seperate_chaining.hpp',
+  search_dir + 'linear_probing.hpp',
+  graph_dir + 'graph.hpp',
 )
 
 # tests
@@ -112,5 +113,13 @@ linear_probing_test_exe = executable('linear_probing_test',
   dependencies: gtest_dep
 )
 test('linear_probing_test', linear_probing_test_exe)
+
+graph_test_exe = executable('graph_test',
+  test_dir + 'graph_test.cpp',
+  include_directories: inc_dir,
+  link_with: alg_lib,
+  dependencies: gtest_dep
+)
+test('graph_test', graph_test_exe)
 
 # apps

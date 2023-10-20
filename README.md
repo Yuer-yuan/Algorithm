@@ -221,7 +221,43 @@ $$
 #### collision-resolution
 
 - separate chaining -- buckets + lists
-- 
+- linear probing -- only buckets,  `resize` is necessary
+
+## graph
+
+### glossary
+
+- when there is an edge connecting two vertices, the vertices are **adjacent** to one another and the edges is **incident** to them
+- the **degree** of a vertex is the number of edges incident to it
+- a **subgraph** is a subset of graph's edges and associated vertices that constitutes a graph
+- a **path** is a sequence of vertices connecting by edges
+  - a **simple path** is one with no vertices
+  - a **cycle** is one that starts and ends with the same vertex
+  - a **simple cycle** is a cycle that has no repeated vertices
+- a graph is **connected** if there is a path from everty vertex from everty vertex
+  - a graph that is not connected consists a set of connected components, which are **maximal of conncected subgraphs**
+- a **acyclic** graph is a graph with no cycles
+  - a **tree** is an acyclic connected graph. equal conditions:
+    - `V - 1` edges and no cycles
+    - `V - 1` edges and connected
+    - connected but remove any edge disconnects it
+    - acyclic but add any edge creates a cycle
+  - a **forest** is a disjoint set of trees
+  - a **spanning tree** of a connected graph is a tree that contains all vertices of that graph
+- **density**: if number of edges is within a small constant factor of `V`, **sparse**; otherwise, **dense**
+- **bipartite** graph
+
+order-of-growth performance for typical `Graph` implementations
+
+![image-20231019232659837](./assets/image-20231019232659837.png)
+
+### undirected graph
+
+### directed graph
+
+### minimum spanning tree
+
+### shortest path
 
 
 
