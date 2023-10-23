@@ -12,8 +12,8 @@ TEST(all, tiny_graph) {
   for (auto const& [v, w] : E) {
     G.add_edge(v, w);
   }
-  ASSERT_EQ(V, G.v());
-  ASSERT_EQ(E.size(), G.e());
+  ASSERT_EQ(V, G.V());
+  ASSERT_EQ(E.size(), G.E());
 
   auto get_sorted_adj = [&](int const v) {
     auto adj_v = G.adj(v);

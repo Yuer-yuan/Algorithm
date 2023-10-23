@@ -34,6 +34,7 @@ alg_lib = shared_library('alg',
   search_dir + 'seperate_chaining.hpp',
   search_dir + 'linear_probing.hpp',
   graph_dir + 'graph.hpp',
+  graph_dir + 'dfs.hpp',
 )
 
 # tests
@@ -122,4 +123,11 @@ graph_test_exe = executable('graph_test',
 )
 test('graph_test', graph_test_exe)
 
+dfs_test_exe = executable('dfs_test',
+  test_dir + 'dfs_test.cpp',
+  include_directories: inc_dir,
+  link_with: alg_lib,
+  dependencies: gtest_dep
+)
+test('dfs_test', dfs_test_exe)
 # apps

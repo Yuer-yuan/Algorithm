@@ -253,6 +253,17 @@ order-of-growth performance for typical `Graph` implementations
 
 ### undirected graph
 
+- DFS & BFS: time proportional to $\sum_{i=1}^{n} d_i$
+
+| Problem                      | Solution                     |
+| ---------------------------- | ---------------------------- |
+| single-source connetivity    | DFS                          |
+| single-source paths          | DepthFirstPaths              |
+| single-source shortest paths | BFS                          |
+| connectivity                 | ConnectedComponets/UnionFind |
+| cycle detection              | Cycle                        |
+| bipartiteness                | TwoColor                     |
+
 ### directed graph
 
 ### minimum spanning tree

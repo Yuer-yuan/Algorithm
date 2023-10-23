@@ -1,6 +1,9 @@
 #ifndef __ALG_SORT_COMMON_HPP__
 #define __ALG_SORT_COMMON_HPP__
 
+#include <iostream>
+#include <vector>
+
 namespace alg {
 /* snippet of sort order */
 template <typename T>
@@ -34,6 +37,24 @@ class Order {
                                                        T const& t2) =
       [](T const& t1, T const& t2) { return t1 < t2 ? -1 : (t1 > t2 ? 1 : 0); };
 };
+
+/* reverse elements at [s, e] */
+template <typename T>
+void reverse(std::vector<T>& v, int const s, int const e) {
+  int const n = v.size();
+  if (n == 0 || s > e) {
+    return;
+  }
+  auto is_valid = [&](int const p) { return p >= 0 && p < n; };
+  if (!is_valid(s) || !is_valid(e)) {
+    std::cerr << "reverse error: invalid range\n";
+    return;
+  }
+  int s_ = s - 1, e_ = e + 1;
+  while (++s_ != e_ && s_ != --e_) {
+    std::swap(v[s_], v[e_]);
+  }
+}
 
 };  // namespace alg
 

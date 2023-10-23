@@ -6,43 +6,43 @@
 #include <vector>
 namespace alg {
 class Graph {
-  int v_;
-  int e_;
+  int V_;
+  int E_;
   std::vector<std::list<int>> adj_;
 
  public:
-  Graph(int const v) : v_(v), e_(0) { adj_.resize(v_); }
-  Graph(Graph const& G) : v_(G.v_), e_(G.e_), adj_(G.adj_) {}
+  Graph(int const V) : V_(V), E_(0) { adj_.resize(V_); }
+  Graph(Graph const& G) : V_(G.V_), E_(G.E_), adj_(G.adj_) {}
   Graph& operator=(Graph const& G) {
-    this->v_ = G.v_;
-    this->e_ = G.e_;
+    this->V_ = G.V_;
+    this->E_ = G.E_;
     this->adj_ = G.adj_;
     return *this;
   }
-  Graph(Graph&& G) : v_(G.v_), e_(G.e_), adj_(std::move(G.adj_)) {}
+  Graph(Graph&& G) : V_(G.V_), E_(G.E_), adj_(std::move(G.adj_)) {}
   Graph& operator=(Graph&& G) {
-    this->v_ = G.v_;
-    this->e_ = G.e_;
+    this->V_ = G.V_;
+    this->E_ = G.E_;
     this->adj_ = std::move(G.adj_);
     return *this;
   }
 
-  int v() const { return v_; }
+  int V() const { return V_; }
 
-  int e() const { return e_; }
+  int E() const { return E_; }
 
   void add_edge(int const v, int const w) {
-    if (!is_vertex_valid(v) || !is_vertex_valid(w)) {
+    if (!is_valid_vertex(v) || !is_valid_vertex(w)) {
       return;
     }
-    e_++;
+    E_++;
     adj_[v].push_front(w);
     adj_[w].push_front(v);
   }
 
   std::vector<int> adj(int const v) const {
     std::vector<int> va;
-    if (!is_vertex_valid(v)) {
+    if (!is_valid_vertex(v)) {
       return va;
     }
     va.reserve(adj_[v].size());
@@ -52,8 +52,8 @@ class Graph {
 
   std::string str() const {
     std::stringstream ss;
-    ss << "vertices: " << v_ << ", edges: " << e_ << '\n';
-    for (int v = 0; v < v_; v++) {
+    ss << "vertices: " << V_ << ", edges: " << E_ << '\n';
+    for (int v = 0; v < V_; v++) {
       ss << v << ": ";
       for (int const w : adj_[v]) {
         ss << w << ' ';
@@ -64,8 +64,8 @@ class Graph {
   }
 
  private:
-  bool is_vertex_valid(int const v) const {
-    if (v < 0 || v >= v_) {
+  bool is_valid_vertex(int const v) const {
+    if (v < 0 || v >= V_) {
       return false;
     }
     return true;
