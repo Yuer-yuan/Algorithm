@@ -35,6 +35,8 @@ alg_lib = shared_library('alg',
   search_dir + 'linear_probing.hpp',
   graph_dir + 'graph.hpp',
   graph_dir + 'dfs.hpp',
+  graph_dir + 'bfs.hpp',
+  graph_dir + 'cc.hpp',
 )
 
 # tests
@@ -130,4 +132,20 @@ dfs_test_exe = executable('dfs_test',
   dependencies: gtest_dep
 )
 test('dfs_test', dfs_test_exe)
+
+bfs_test_exe = executable('bfs_test',
+  test_dir + 'bfs_test.cpp',
+  include_directories: inc_dir,
+  link_with: alg_lib,
+  dependencies: gtest_dep
+)
+test('bfs_test', bfs_test_exe)
+
+cc_test_exe = executable('cc_test',
+  test_dir + 'cc_test.cpp',
+  include_directories: inc_dir,
+  link_with: alg_lib,
+  dependencies: gtest_dep
+)
+test('cc_test', cc_test_exe)
 # apps

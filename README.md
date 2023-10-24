@@ -253,7 +253,8 @@ order-of-growth performance for typical `Graph` implementations
 
 ### undirected graph
 
-- DFS & BFS: time proportional to $\sum_{i=1}^{n} d_i$
+- DFS: time proportional to $V + E$
+- BFS: time proportional to $V + E$ in the worst case; if connected, $\sum_{i=1}^{n} d_i = 2E$
 
 | Problem                      | Solution                     |
 | ---------------------------- | ---------------------------- |
