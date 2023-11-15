@@ -234,6 +234,7 @@ $$
   - a **simple path** is one with no vertices
   - a **cycle** is one that starts and ends with the same vertex
   - a **simple cycle** is a cycle that has no repeated vertices
+  - the **length** of a cycle or a path is its number of edges
 - a graph is **connected** if there is a path from everty vertex from everty vertex
   - a graph that is not connected consists a set of connected components, which are **maximal of conncected subgraphs**
 - a **acyclic** graph is a graph with no cycles
@@ -246,6 +247,10 @@ $$
   - a **spanning tree** of a connected graph is a tree that contains all vertices of that graph
 - **density**: if number of edges is within a small constant factor of `V`, **sparse**; otherwise, **dense**
 - **bipartite** graph
+- vertices v and w are **strongly connnected** if there is both a directed path from v to w and a directed path from w to v
+  - a strong component is a maximal subset of **strongly-connected** vertices
+  - 
+
 
 order-of-growth performance for typical `Graph` implementations
 
@@ -267,6 +272,31 @@ order-of-growth performance for typical `Graph` implementations
 
 ### directed graph
 
+| Problem                           | Solution                    |
+| --------------------------------- | --------------------------- |
+| path (single-source reachability) | DFS                         |
+| shortest path                     | BFS                         |
+| topological sort                  | DFS and reverse postorder   |
+| strong connectivity               | Kosaraju-Sharir (DFS twice) |
+| transitive closure                |                             |
+| page rank                         |                             |
+
+#### topological sort
+
+- precedence scheduling
+
+- proposition: a digraph has a topological order if no directed cycle
+
+#### strong components
+
+- Kosaraju-Sharir algorithm
+  - reverse graph. strong components in $G$ are the same as in $G^R$
+  - kernel DAG. contract each strong components into a single vertex
+  - idea
+    - compute topological order (reverse postorder) in kernel DAG
+    - run DFS, considering vertices in reverse topological order
+  - time proportional to $E + V$
+
 ### minimum spanning tree
 
 ### shortest path
@@ -279,7 +309,7 @@ order-of-growth performance for typical `Graph` implementations
 
 ### substring search
 
-#### brute force: 
+#### brute force
 
 - worst case $\sim MN$, where $M$ is word length, and $N$ is string length
 

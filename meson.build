@@ -51,6 +51,7 @@ libalg = shared_library('libalg',
   graph_dir + 'dfs.hpp',
   graph_dir + 'bfs.hpp',
   graph_dir + 'cc.hpp',
+  graph_dir + 'digraph.hpp',
 )
 
 # declare dependency
@@ -168,6 +169,14 @@ cc_test_exe = executable('cc_test',
   dependencies: gtest_dep
 )
 test('cc_test', cc_test_exe)
+
+digraph_test_exe = executable('digraph_test',
+  test_dir + 'digraph_test.cpp',
+  include_directories: inc_dir,
+  link_with: libalg,
+  dependencies: gtest_dep
+)
+test('digraph_test', graph_test_exe)
 
 # other tests
 # mytest_exe = executable('mytest',
