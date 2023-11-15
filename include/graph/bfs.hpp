@@ -1,11 +1,13 @@
 #ifndef __ALG_GRAPH_BFS_HPP__
 #define __ALG_GRAPH_BFS_HPP__
+
 #include <graph/graph.hpp>
 #include <iostream>
 #include <limits>
 #include <queue>
 #include <vector>
-#include "sort/common.hpp"
+#include <sort/common.hpp>
+
 namespace alg {
 class BreathFirstPaths {
   static constexpr int INF = -1;

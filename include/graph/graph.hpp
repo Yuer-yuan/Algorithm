@@ -4,6 +4,7 @@
 #include <list>
 #include <sstream>
 #include <vector>
+
 namespace alg {
 class Graph {
   int V_;

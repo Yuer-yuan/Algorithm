@@ -15,9 +15,9 @@ class ConnectedComponents {
     int const V = G.V();
     marked_.resize(V, false);
     id_.resize(V, -1);
-    size_.resize(V, 0);
     for (int v = 0; v < V; v++) {
       if (!marked_[v]) {
+        size_.push_back(0);
         count_++;
         dfs(G, v);
       }

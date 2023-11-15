@@ -271,7 +271,49 @@ order-of-growth performance for typical `Graph` implementations
 
 ### shortest path
 
+## string
 
+### string sorts
+
+### tries
+
+### substring search
+
+#### brute force: 
+
+- worst case $\sim MN$, where $M$ is word length, and $N$ is string length
+
+- backup the last $M$ characters, but often no room or time to save text
+  - linear time guarantee
+
+#### Knuth-Morris-Pratt substring search (KMP)
+
+- deterministic finite state machine (DFA)
+  - simulate on text: at most $N + M$ characters accessed
+  - build DFA: $RM$ where $R$ is all possible characters
+    - improved version constructs NFA in time and space proportional to $M$
+
+#### Boyer-Moore
+
+- intuition: skip when mismatched
+- pre-compute the right-most occurence
+- compares $\sim \frac{N}{M}$, worst $\sim MN$
+  - can be improved to $\sim 3N$ by adding KMP-like rule to guard against repetitive patterns
+
+#### Rabin-Karp fingerprint match
+
+- intuition: modular hashing
+- compute the hash of pattern
+- for each substring, compute its hash, and check for equality with pattern if hash matches
+- Horner's method to evaluate degree-M polynomial in linear-time
+- choose large prime Q to possibly avoid collision
+- Monte-Carlo version and Las-Vegas version
+
+![image-20231025111505411](./assets/image-20231025111505411.png)
+
+#### summary
+
+![image-20231025112306864](./assets/image-20231025112306864.png)
 
 # reference
 
