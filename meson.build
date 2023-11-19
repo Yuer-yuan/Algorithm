@@ -54,6 +54,7 @@ libalg = shared_library('libalg',
   graph_dir + 'digraph.hpp',
   graph_dir + 'directed_dfs.hpp',
   graph_dir + 'directed_bfs.hpp',
+  graph_dir + 'directed_cycle.hpp',
 )
 
 # declare dependency
@@ -179,6 +180,22 @@ digraph_test_exe = executable('digraph_test',
   dependencies: gtest_dep
 )
 test('digraph_test', graph_test_exe)
+
+directed_cycle_test_exe = executable('directed_cycle_test',
+  test_dir + 'directed_cycle_test.cpp',
+  include_directories: inc_dir,
+  link_with: libalg,
+  dependencies: gtest_dep
+)
+test('directed_cycle_test', directed_cycle_test_exe)
+
+topological_test_exe = executable('topological_test',
+  test_dir + 'topological_test.cpp',
+  include_directories: inc_dir,
+  link_with: libalg,
+  dependencies: gtest_dep
+)
+test('topological_test', topological_test_exe)
 
 # other tests
 # mytest_exe = executable('mytest',

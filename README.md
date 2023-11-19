@@ -290,7 +290,14 @@ order-of-growth performance for typical `Graph` implementations
 
 - precedence scheduling -- put the vertices in order such that all its directed edges point from a vertex earlier in the order to a vertex later order
 - proposition: DAG -- a digraph has a topological order if no directed cycle
-- 
+- reverse postorder of DFS in a DAG is a topological sort
+  - in time proportional to $V + E$
+  - any edge v -> w, when `dfs(v)` is called
+    - `dfs(w)` is called and returned
+    - `dfs(w)` is not called
+    - `dfs(w)` is called but not returned (impossible)
+    - -- w is added to the stack before v is added
+
 
 #### strong components
 

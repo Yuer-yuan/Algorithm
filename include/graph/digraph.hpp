@@ -2,7 +2,6 @@
 #define __ALG_GRAPH_DIGRAPH_HPP_
 
 #include <cstdint>
-#include <list>
 #include <sstream>
 #include <vector>
 
@@ -10,7 +9,7 @@ namespace alg {
 class Digraph {
   uint64_t V_;
   uint64_t E_;
-  std::vector<std::list<uint64_t>> adj_;
+  std::vector<std::vector<uint64_t>> adj_;
   std::vector<uint64_t> indegree_;
 
  public:
@@ -49,18 +48,15 @@ class Digraph {
       return;
     }
     E_++;
-    adj_[v].push_front(w);
+    adj_[v].push_back(w);
     indegree_[w]++;
   }
 
   std::vector<uint64_t> adj(uint64_t const v) const {
-    std::vector<uint64_t> va;
     if (!is_valid_vertex(v)) {
-      return va;
+      return std::vector<uint64_t>();
     }
-    va.reserve(adj_[v].size());
-    va.insert(va.end(), adj_[v].begin(), adj_[v].end());
-    return va;
+    return adj_[v];
   }
 
   uint64_t outdegree(uint64_t const v) const {

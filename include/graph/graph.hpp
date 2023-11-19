@@ -1,7 +1,6 @@
 #ifndef __ALG_GRAPH_GRAPH_HPP_
 #define __ALG_GRAPH_GRAPH_HPP_
 
-#include <list>
 #include <sstream>
 #include <vector>
 
@@ -9,7 +8,7 @@ namespace alg {
 class Graph {
   int V_;
   int E_;
-  std::vector<std::list<int>> adj_;
+  std::vector<std::vector<int>> adj_;
 
  public:
   Graph(int const V) : V_(V), E_(0) { adj_.resize(V_); }
@@ -37,18 +36,15 @@ class Graph {
       return;
     }
     E_++;
-    adj_[v].push_front(w);
-    adj_[w].push_front(v);
+    adj_[v].push_back(w);
+    adj_[w].push_back(v);
   }
 
   std::vector<int> adj(int const v) const {
-    std::vector<int> va;
     if (!is_valid_vertex(v)) {
-      return va;
+      return std::vector<int>();
     }
-    va.reserve(adj_[v].size());
-    va.insert(va.end(), adj_[v].begin(), adj_[v].end());
-    return va;
+    return adj_[v];
   }
 
   std::string str() const {
