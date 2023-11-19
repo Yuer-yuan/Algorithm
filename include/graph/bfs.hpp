@@ -5,8 +5,8 @@
 #include <iostream>
 #include <limits>
 #include <queue>
-#include <vector>
 #include <sort/common.hpp>
+#include <vector>
 
 namespace alg {
 class BreathFirstPaths {
@@ -67,7 +67,7 @@ class BreathFirstPaths {
       return path;
     }
     path.push_back(v);
-    for (int w = v; marked_[w] && edge_to_[w] != INF; w = edge_to_[w]) {
+    for (int w = v; dist_to_[w] != 0; w = edge_to_[w]) {
       path.push_back(edge_to_[w]);
     }
     reverse(path, 0, path.size() - 1);

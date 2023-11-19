@@ -1,6 +1,8 @@
 #ifndef __ALG_SORT_COMMON_HPP__
 #define __ALG_SORT_COMMON_HPP__
 
+#include <cassert>
+#include <cstdint>
 #include <iostream>
 #include <vector>
 
@@ -40,16 +42,13 @@ class Order {
 
 /* reverse elements at [s, e] */
 template <typename T>
-void reverse(std::vector<T>& v, int const s, int const e) {
-  int const n = v.size();
+void reverse(std::vector<T>& v, uint64_t const s, uint64_t const e) {
+  uint64_t const n = v.size();
   if (n == 0 || s > e) {
     return;
   }
-  auto is_valid = [&](int const p) { return p >= 0 && p < n; };
-  if (!is_valid(s) || !is_valid(e)) {
-    std::cerr << "reverse error: invalid range\n";
-    return;
-  }
+  auto is_valid = [&](uint64_t const p) { return p < n; };
+  assert(is_valid(s) && is_valid(e));
   int s_ = s - 1, e_ = e + 1;
   while (++s_ != e_ && s_ != --e_) {
     std::swap(v[s_], v[e_]);

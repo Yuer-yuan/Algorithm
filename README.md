@@ -281,11 +281,16 @@ order-of-growth performance for typical `Graph` implementations
 | transitive closure                |                             |
 | page rank                         |                             |
 
+#### cycle detection
+
+- recursive call stack represents a path
+- if we find a edge v -> w which is already on the stack, we find a cycle
+
 #### topological sort
 
-- precedence scheduling
-
-- proposition: a digraph has a topological order if no directed cycle
+- precedence scheduling -- put the vertices in order such that all its directed edges point from a vertex earlier in the order to a vertex later order
+- proposition: DAG -- a digraph has a topological order if no directed cycle
+- 
 
 #### strong components
 
