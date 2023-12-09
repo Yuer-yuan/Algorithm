@@ -17,7 +17,7 @@ endif
 
 #=== shared library ===
 # include directory
-subdir('include')
+# subdir('include')
 
 #=== tests ===
 # test directory
