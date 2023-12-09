@@ -236,7 +236,7 @@ $$
   - a **simple cycle** is a cycle that has no repeated vertices
   - the **length** of a cycle or a path is its number of edges
 - a graph is **connected** if there is a path from everty vertex from everty vertex
-  - a graph that is not connected consists a set of connected components, which are **maximal of conncected subgraphs**
+  - a graph that is not connected consists a set of connected components, which are **maximal of connected subgraphs**
 - a **acyclic** graph is a graph with no cycles
   - a **tree** is an acyclic connected graph. equal conditions:
     - `V - 1` edges and no cycles
@@ -244,12 +244,13 @@ $$
     - connected but remove any edge disconnects it
     - acyclic but add any edge creates a cycle
   - a **forest** is a disjoint set of trees
-  - a **spanning tree** of a connected graph is a tree that contains all vertices of that graph
+  - a **spanning tree** of a connected graph is a tree (connected and asyclic) that contains all vertices of that graph
 - **density**: if number of edges is within a small constant factor of `V`, **sparse**; otherwise, **dense**
 - **bipartite** graph
-- vertices v and w are **strongly connnected** if there is both a directed path from v to w and a directed path from w to v
+- vertices v and w are **strongly connected** if there is both a directed path from v to w and a directed path from w to v
   - a strong component is a maximal subset of **strongly-connected** vertices
-  - 
+- a **cut** in a graph is a partition of its vertices into two  (nonempty) sets
+- a **crossing edge** connects a vertex in one set with a vertex in the other
 
 
 order-of-growth performance for typical `Graph` implementations
@@ -301,6 +302,8 @@ order-of-growth performance for typical `Graph` implementations
 
 #### strong components
 
+- strong connected: mutually reach
+
 - Kosaraju-Sharir algorithm
   - reverse graph. strong components in $G$ are the same as in $G^R$
   - kernel DAG. contract each strong components into a single vertex
@@ -311,7 +314,100 @@ order-of-growth performance for typical `Graph` implementations
 
 ### minimum spanning tree
 
+- find a min weight spanning tree
+- simplifying assumptions
+  - edge weights are unique
+  - graph is connected
+  - -> MST is unique
+  - what if edge weights are not distinct? -- greedy algorithms still work
+  - what if graph is not connected? -- minimum spanning forests
+- cut properties
+  - a **cut** in a graph is a partition of its vertices into two  (nonempty) sets
+  - a **crossing edge** connects a vertex in one set with a vertex in the other
+  - -> given any cut, the crossing edge of min weight is in the MST
+  - we can prove but assume the contradictory
+- greedy algorithm
+  - start with all gray edges
+  - find cut with no black crossing edge, color its min weight to black
+  - run until $V-1$ edges colored to black
+  - implementations: -- choose cut and find min weight edge
+
+#### Kruskal algorithm
+
+- considering edges in ascending order
+- add edges to tree unless that will create a circle
+- use union-find to test connectivity ($\log{V}$)
+- proportional to $E \log{E}$ in the worst case
+
+#### Prim algorithm
+
+- start with vertex 0 and greedily grow tree T
+- add to T the min weight edge  with exactly one endpoint in T
+- repeat until $V - 1$ edges
+- how to find min weight edge to add?
+  - lazy version: use PQ to maintain the edges
+    - proportion:
+      - time: $E \log{E}$
+      - extra space: $E$
+  - eager version: maintain a PQ of vertices connected by an edge to T where the priority of a vertex is the weight of the shortest edge connecting it to the tree
+    - delete min priority vertex v from PQ and add the edge to the tree
+    - update PQ by considering all the edges v-w incident to v
+      - if w is already in the tree, ignore
+      - if w is not on the PQ, add it to the PQ
+      - decrease its priority if v-w becomes the shortest edge
+
 ### shortest path
+
+- variants
+
+  - source sink: from one vertex to another
+  - single source: from one vertex to every other
+  - all pairs: between all pairs of vertices
+
+- restrictions on edges
+
+  - nonnegative weights
+  - arbitrary weights
+  - euclidean weights
+
+- cycles?
+
+  - no directed cycles
+  - no negative cycles
+
+- simplifying assumptions: shortest paths from v to each other vertices exist
+
+- how to choose which edge to relax?
+
+  - Dijkstra's (nonnegative weights)
+  - Topological sort (no directed cycles)
+  - Bellman-Ford's (no negative cycl)
+
+
+#### nonnegative weights -- Dijkstra algorithm
+
+- consider vertices in increasing order of distance to s
+- add vertex to the tree and relax all the edges pointing to the vertex
+
+#### acyclic shortest path -- topological sort
+
+- consider vertices in topological order
+- add vertex to the tree and relax all the edges pointing to the vertex
+
+#### parallel job scheduling -- critical path
+
+![image-20231208214400137](./assets/image-20231208214400137.png)
+#### negative weights -- Bellman-Ford algorithm
+
+- negative cycles -- a cycle whose sum of weights is negative
+- proportion
+  - a SPT (shortest path tree) exists if there is no negative cycles
+- set distance of s to 0 and others to $\infin$
+- repeat for V times: relax all E edges
+
+#### summary
+
+![image-20231208220330323](./assets/image-20231208220330323.png)
 
 ## string
 
@@ -356,6 +452,65 @@ order-of-growth performance for typical `Graph` implementations
 #### summary
 
 ![image-20231025112306864](./assets/image-20231025112306864.png)
+
+## NP completeness
+
+- NP-complete problems: no polynomial solutions have been found for any one of them -- $P \neq NP$
+- classes
+  - $P$ -- solvable in polynomial time
+  - $NP$ -- verifiable in polynomial time when given a solution
+    - $P \subseteq NP$
+  - $NPC$ -- NP-complete, if it belongs to NP and is as hard as any problem in NP. If any problem in NP can be solved in polynomial time, then every problem in NP has a polynomial-time algorithm
+    - to demonstrate how "hard" a problem is
+
+#### key concepts to show a problem to be NPC
+
+- decision problems -- the answer is "yes" or "no". NPC applies directly not to optimization problems. optimization problem can be cast to related decision problem to which a bound of value to be optimized imposed (e.g., is there a shortest path from v to w -> is there a path from v to w with at least k edges?)
+- reductions
+  - given a problem B, we can transform instance of problem A to problem B in polynomial time.
+  - the answer of B is the answer of A
+  - thus we can solve problem A in polynomial time by transforming its instance to that of another polynomial decision problem in polynomial time
+  - ![image-20231124111238012](./assets/image-20231124111238012.png)
+  - hardness proof: B is NPC if A is NPC and there is a transforming from instance of A to instance of B
+- a first NPC problem
+  - circuit-satisfactory-problem
+- procedure
+  - conjecture: **Q can be poly-reducted to Q' if and only if instance of Q can be poly-transformed to instance of Q', and any answer towards instance of Q' is also answer towards instance of Q**.
+  - conclusion: Q is at most as harder as Q'
+  - how to prove Q is NPC? -- reduce a NPC problem to the given problem
+    - prove Q is NP (poly-checked)
+    - select a NPC problem Q'
+    - give a alg to poly-transform instance of Q' to instance of Q
+    - prove for each answer towards instance of Q', it is also answer (after transformed) towards instance of Q
+  - then Q' is at most as harder as Q. Q is NPC
+
+## divide and conquer
+
+- substitution method
+  - guess and prove
+  - trick: avoid asymptotic notions in inductions and name them explicitly
+- recursion tree method
+- master method
+  - for $T(n) = a T(\frac{n}{b}) + f(n), \epsilon \gt 0$
+    - case 1 -- $f(n) = O(n ^{\log _b a - \epsilon})$
+      - $T(n) = \Theta(n ^{\log _b a})$
+
+    - case 2 -- $f(n) = \Theta(n ^{log _b a} \lg^k n), k \ge 0$
+      - $T(n) = \Theta(n ^{log _b a} \lg ^{k + 1} n)$
+
+    - case 3 -- $f(n) = \Omega(n ^{log _b a + \epsilon}), \epsilon \gt 0$ and $a f( \frac{n}{b}) \le cf(n), c \lt 1$ 
+      - $T(n) = \Theta(f(n))$
+
+  - just check if driving function f(n) grows polynomially (or approximately) faster than watershed function $n^{\log_b a}$
+  - there is a gap between case 1 and case 2 when $f(n) = o(n^{log_b a})$ and also one between case 2 and case 3 when $f(n) = \omega(n^{log_b a})$
+
+
+## dynamic programming
+
+- unlike divide-and-conquer method, dynamic programming (a tabular way to avoid repeatedly calculating) solves overlapping subproblems
+- DP focuses on optimization problems
+- the time of DP is proportional to the out degrees of subproblem digraph 
+
 
 # reference
 
