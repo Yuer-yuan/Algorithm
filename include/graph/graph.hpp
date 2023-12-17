@@ -1,17 +1,22 @@
 #ifndef __ALG_GRAPH_GRAPH_HPP_
 #define __ALG_GRAPH_GRAPH_HPP_
 
+#include <cstdint>
+#include <exception>
+#include <ostream>
 #include <sstream>
+#include <stdexcept>
 #include <vector>
 
 namespace alg {
+
 class Graph {
-  int V_;
-  int E_;
-  std::vector<std::vector<int>> adj_;
+  uint64_t V_;
+  uint64_t E_;
+  std::vector<std::vector<uint64_t>> adj_;
 
  public:
-  Graph(int const V) : V_(V), E_(0) { adj_.resize(V_); }
+  Graph(uint64_t const V) : V_(V), E_(0) { adj_.resize(V_); }
   Graph(Graph const& G) : V_(G.V_), E_(G.E_), adj_(G.adj_) {}
   Graph& operator=(Graph const& G) {
     this->V_ = G.V_;
@@ -27,46 +32,44 @@ class Graph {
     return *this;
   }
 
-  int V() const { return V_; }
+  // number of vertices
+  uint64_t V() const { return V_; }
 
-  int E() const { return E_; }
+  // number of edges
+  uint64_t E() const { return E_; }
 
-  void add_edge(int const v, int const w) {
+  // add edge v->w to graph
+  void add_edge(uint64_t const v, uint64_t const w) {
     if (!is_valid_vertex(v) || !is_valid_vertex(w)) {
-      return;
+      throw std::runtime_error("error adding edge: invalid vertex");
     }
     E_++;
     adj_[v].push_back(w);
     adj_[w].push_back(v);
   }
 
-  std::vector<int> adj(int const v) const {
+  std::vector<uint64_t> adj(uint64_t const v) const {
     if (!is_valid_vertex(v)) {
-      return std::vector<int>();
+      throw std::runtime_error("error getting adjecency list: invalid vertex");
     }
     return adj_[v];
   }
 
-  std::string str() const {
-    std::stringstream ss;
-    ss << "vertices: " << V_ << ", edges: " << E_ << '\n';
-    for (int v = 0; v < V_; v++) {
-      ss << v << ": ";
-      for (int const w : adj_[v]) {
-        ss << w << ' ';
+  std::ostream& operator<<(std::ostream& os) {
+    os << "V: " << V_ << ", E: " << E_ << '\n';
+    for (uint64_t v = 0; v < V_; v++) {
+      os << v << ":";
+      for (auto const w : adj_[v]) {
+        os << ' ' << w;
       }
-      ss << '\n';
+      os << '\n';
     }
-    return ss.str();
+    return os;
   }
 
  private:
-  bool is_valid_vertex(int const v) const {
-    if (v < 0 || v >= V_) {
-      return false;
-    }
-    return true;
-  }
+  bool is_valid_vertex(uint64_t const v) const { return v < V_; }
 };
+
 }  // namespace alg
 #endif  // !__ALG_GRAPH_GRAPH_HPP_

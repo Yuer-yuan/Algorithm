@@ -1,18 +1,20 @@
 #ifndef __ALG_GRAPH_DIRECTED_CYCLE__
 #define __ALG_GRAPH_DIRECTED_CYCLE__
 
+#include <algorithm>
 #include <cassert>
 #include <cstdint>
 #include <vector>
+
 #include "graph/digraph.hpp"
-#include "sort/common.hpp"
+
 namespace alg {
 /*
  * cycle detection of digraph
  */
 class DirectedCycle {
   std::vector<bool> marked_;       // marked_[v] -- has v been marked?
-  std::vector<uint64_t> edge_to_;  // if w = edge_to_[v] -- w -> v
+  std::vector<uint64_t> edge_to_;  // if w=edge_to_[v] -- w->v
   std::vector<bool> on_stack_;     // on_stack_[v] -- is v on stack?
   std::vector<uint64_t> cycle_;    // detected cycle
 
@@ -29,8 +31,9 @@ class DirectedCycle {
     }
   }
 
-  bool has_cycle() const { return cycle_.size() != 0; }
+  bool has_cycle() const { return !cycle_.empty(); }
 
+  // a cycle found
   std::vector<uint64_t> cycle() const { return cycle_; }
 
  private:
@@ -46,13 +49,13 @@ class DirectedCycle {
         edge_to_[w] = v;
         dfs(G, w);
       } else if (on_stack_[w]) {
-        // find a cycle -- a path v -> w -> v
+        // v->w is a backward edge so a cycle found
         for (uint64_t x = v; x != w; x = edge_to_[x]) {
           cycle_.push_back(x);
         }
         cycle_.push_back(w);
         cycle_.push_back(v);
-        reverse(cycle_, 0, cycle_.size() - 1);
+        std::reverse(cycle_.begin(), cycle_.end());
       }
     }
     on_stack_[v] = false;

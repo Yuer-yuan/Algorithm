@@ -143,7 +143,7 @@ $$
 - upper bound $\Theta (N)$ (theoretically proved, but not practical)
 - repeat partitioning on a sub-array until $k_{th}$ element found
 
-## Heap Sort
+## heap sort
 
 ### priority queue
 
@@ -158,19 +158,21 @@ $$
   - makes poor use of memory
   - not stable
 
+## radix sort
+
+[TBD]
+
 ## summary
 
-![image-20231010174242103](/home/guo/mypro/alg/alg/assets/image-20231010174242103.png)
+![image-20231010174242103](./assets/image-20231010174242103.png)
 
-## search
+# search
 
-### binary search tree
+## binary search trees (balanced)
 
 ![image-20231011072355176](./assets/image-20231011072355176.png)
 
-### balanced search trees
-
-#### 2-3 search tree
+### 2-3 search tree
 - by maintaining two-nodes and three-nodes, each path from root to null link has same length
 - proposition
   - height
@@ -179,7 +181,7 @@ $$
   - guaranteed logarithmic performance for search and insert
 - cumbersome to implement
 
-#### red-black BST
+### red-black BST
 - left-leaning red-black BSTs
 - use "internal" left-leaning links as glue for 3-nodes
   - red links "glue" nodes within a 3-node
@@ -191,14 +193,16 @@ $$
 
 ![image-20231014152316059](./assets/image-20231014152316059.png)
 
-#### b-tree
+### b-tree
 
-### hash tables
+[TBD]
+
+## hash tables
 
 1. mapping
 2. collision-resolution: separate chaining and line probing
 
-#### mapping -- hashing function
+### mapping -- hashing function
 
 - requirements
 
@@ -218,14 +222,14 @@ $$
   - if computing hash-code is prohibitive, software caching it
 - compound keys: `hash = (((day * R + month) % M) * R + year) % M`, if `R` is small, cost of modular by `M` can be eliminated
 
-#### collision-resolution
+### collision-resolution
 
 - separate chaining -- buckets + lists
 - linear probing -- only buckets,  `resize` is necessary
 
-## graph
+# graph
 
-### glossary
+## glossary
 
 - when there is an edge connecting two vertices, the vertices are **adjacent** to one another and the edges is **incident** to them
 - the **degree** of a vertex is the number of edges incident to it
@@ -257,7 +261,7 @@ order-of-growth performance for typical `Graph` implementations
 
 ![image-20231019232659837](./assets/image-20231019232659837.png)
 
-### undirected graph
+## undirected graph
 
 - DFS: time proportional to $V + E$
 - BFS: time proportional to $V + E$ in the worst case; if connected, $\sum_{i=1}^{n} d_i = 2E$
@@ -271,7 +275,7 @@ order-of-growth performance for typical `Graph` implementations
 | cycle detection              | Cycle                        |
 | bipartiteness                | TwoColor                     |
 
-### directed graph
+## directed graph
 
 | Problem                           | Solution                    |
 | --------------------------------- | --------------------------- |
@@ -282,37 +286,39 @@ order-of-growth performance for typical `Graph` implementations
 | transitive closure                |                             |
 | page rank                         |                             |
 
-#### cycle detection
+### cycle detection
 
 - recursive call stack represents a path
 - if we find a edge v -> w which is already on the stack, we find a cycle
 
-#### topological sort
+### topological sort
 
 - precedence scheduling -- put the vertices in order such that all its directed edges point from a vertex earlier in the order to a vertex later order
 - proposition: DAG -- a digraph has a topological order if no directed cycle
-- reverse postorder of DFS in a DAG is a topological sort
+  - detecting backward edge while DFS to detect possible cycles
+
+- reverse postorder of DFS (reversed order of vertices inserted immediately after DFS finished) in a DAG is a topological sort
   - in time proportional to $V + E$
   - any edge v -> w, when `dfs(v)` is called
     - `dfs(w)` is called and returned
     - `dfs(w)` is not called
     - `dfs(w)` is called but not returned (impossible)
-    - -- w is added to the stack before v is added
+    - such that w is added to the stack before v is added
 
 
-#### strong components
+### strong connected components
 
-- strong connected: mutually reach
-
+- strong connected: mutually reachable
 - Kosaraju-Sharir algorithm
   - reverse graph. strong components in $G$ are the same as in $G^R$
   - kernel DAG. contract each strong components into a single vertex
   - idea
     - compute topological order (reverse postorder) in kernel DAG
     - run DFS, considering vertices in reverse topological order
+  - the second pass of DFS traverse the graph in topological order of $G^R$, and when calling `dfs(v)`, all vertices met are in the same strongly connected components (no edge towards other strongly connect)
   - time proportional to $E + V$
 
-### minimum spanning tree
+## minimum spanning tree
 
 - find a min weight spanning tree
 - simplifying assumptions
@@ -332,14 +338,14 @@ order-of-growth performance for typical `Graph` implementations
   - run until $V-1$ edges colored to black
   - implementations: -- choose cut and find min weight edge
 
-#### Kruskal algorithm
+### Kruskal algorithm
 
 - considering edges in ascending order
 - add edges to tree unless that will create a circle
 - use union-find to test connectivity ($\log{V}$)
 - proportional to $E \log{E}$ in the worst case
 
-#### Prim algorithm
+### Prim algorithm
 
 - start with vertex 0 and greedily grow tree T
 - add to T the min weight edge  with exactly one endpoint in T
@@ -356,7 +362,7 @@ order-of-growth performance for typical `Graph` implementations
       - if w is not on the PQ, add it to the PQ
       - decrease its priority if v-w becomes the shortest edge
 
-### shortest path
+## shortest path
 
 - variants
 
@@ -384,20 +390,20 @@ order-of-growth performance for typical `Graph` implementations
   - Bellman-Ford's (no negative cycl)
 
 
-#### nonnegative weights -- Dijkstra algorithm
+### nonnegative weights -- Dijkstra algorithm
 
 - consider vertices in increasing order of distance to s
 - add vertex to the tree and relax all the edges pointing to the vertex
 
-#### acyclic shortest path -- topological sort
+### acyclic shortest path -- topological sort
 
 - consider vertices in topological order
 - add vertex to the tree and relax all the edges pointing to the vertex
 
-#### parallel job scheduling -- critical path
+### parallel job scheduling -- critical path
 
 ![image-20231208214400137](./assets/image-20231208214400137.png)
-#### negative weights -- Bellman-Ford algorithm
+### negative weights -- Bellman-Ford algorithm
 
 - negative cycles -- a cycle whose sum of weights is negative
 - proportion
@@ -405,40 +411,50 @@ order-of-growth performance for typical `Graph` implementations
 - set distance of s to 0 and others to $\infin$
 - repeat for V times: relax all E edges
 
-#### summary
+### summary
 
 ![image-20231208220330323](./assets/image-20231208220330323.png)
 
-## string
+## maximum flow and minimum cut
 
-### string sorts
+[TBD]
 
-### tries
+# string
 
-### substring search
+## string sorts
 
-#### brute force
+[TBD]
+
+## tries
+
+[TBD]
+
+## substring search
+
+[TBD]
+
+### brute force
 
 - worst case $\sim MN$, where $M$ is word length, and $N$ is string length
 
 - backup the last $M$ characters, but often no room or time to save text
   - linear time guarantee
 
-#### Knuth-Morris-Pratt substring search (KMP)
+### Knuth-Morris-Pratt substring search (KMP)
 
 - deterministic finite state machine (DFA)
   - simulate on text: at most $N + M$ characters accessed
   - build DFA: $RM$ where $R$ is all possible characters
     - improved version constructs NFA in time and space proportional to $M$
 
-#### Boyer-Moore
+### Boyer-Moore
 
 - intuition: skip when mismatched
 - pre-compute the right-most occurence
 - compares $\sim \frac{N}{M}$, worst $\sim MN$
   - can be improved to $\sim 3N$ by adding KMP-like rule to guard against repetitive patterns
 
-#### Rabin-Karp fingerprint match
+### Rabin-Karp fingerprint match
 
 - intuition: modular hashing
 - compute the hash of pattern
@@ -449,11 +465,11 @@ order-of-growth performance for typical `Graph` implementations
 
 ![image-20231025111505411](./assets/image-20231025111505411.png)
 
-#### summary
+### summary
 
 ![image-20231025112306864](./assets/image-20231025112306864.png)
 
-## NP completeness
+# NP completeness
 
 - NP-complete problems: no polynomial solutions have been found for any one of them -- $P \neq NP$
 - classes
@@ -463,7 +479,7 @@ order-of-growth performance for typical `Graph` implementations
   - $NPC$ -- NP-complete, if it belongs to NP and is as hard as any problem in NP. If any problem in NP can be solved in polynomial time, then every problem in NP has a polynomial-time algorithm
     - to demonstrate how "hard" a problem is
 
-#### key concepts to show a problem to be NPC
+### key concepts to show a problem to be NPC
 
 - decision problems -- the answer is "yes" or "no". NPC applies directly not to optimization problems. optimization problem can be cast to related decision problem to which a bound of value to be optimized imposed (e.g., is there a shortest path from v to w -> is there a path from v to w with at least k edges?)
 - reductions
@@ -484,7 +500,7 @@ order-of-growth performance for typical `Graph` implementations
     - prove for each answer towards instance of Q', it is also answer (after transformed) towards instance of Q
   - then Q' is at most as harder as Q. Q is NPC
 
-## divide and conquer
+# divide and conquer
 
 - substitution method
   - guess and prove
@@ -505,7 +521,7 @@ order-of-growth performance for typical `Graph` implementations
   - there is a gap between case 1 and case 2 when $f(n) = o(n^{log_b a})$ and also one between case 2 and case 3 when $f(n) = \omega(n^{log_b a})$
 
 
-## dynamic programming
+# dynamic programming
 
 - unlike divide-and-conquer method, dynamic programming (a tabular way to avoid repeatedly calculating) solves overlapping subproblems
 - DP focuses on optimization problems

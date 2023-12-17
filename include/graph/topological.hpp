@@ -3,11 +3,15 @@
 
 #include <cassert>
 #include <cstdint>
+#include <stdexcept>
 #include <vector>
+
 #include "graph/digraph.hpp"
 #include "graph/directed_cycle.hpp"
 #include "graph/directed_dfs.hpp"
+
 namespace alg {
+
 class Topological {
   std::vector<uint64_t> order_;
   std::vector<uint64_t> rank_;
@@ -15,19 +19,30 @@ class Topological {
  public:
   Topological(Digraph const& G) {
     DirectedCycle detector(G);
-    assert(!detector.has_cycle());
+    if (detector.has_cycle()) {
+      throw std::runtime_error(
+          "error calculating Topological order for cyclic graph");
+    }
     rank_.resize(G.V(), 0);
     DepthFirstOrder orders(G);
     order_ = orders.rev_post_order();
     uint64_t r = 0;
-    for (uint64_t const v : order_) {
-      rank_[v] = r++;
+    for (auto const& v : order_) {
+      rank_[v] = r;
+      r += 1;
     }
   }
+
+  // whether there is a topological order
   bool has_order() const { return !order_.empty(); }
+
+  // topological order of vertices
   std::vector<uint64_t> order() const { return order_; }
+
   uint64_t rank(uint64_t const v) const {
-    assert(is_valid_vertex(v));
+    if (!is_valid_vertex(v)) {
+      throw std::runtime_error("error getting rank of invalid vertex");
+    }
     return rank_[v];
   }
 

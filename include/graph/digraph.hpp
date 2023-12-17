@@ -2,7 +2,9 @@
 #define __ALG_GRAPH_DIGRAPH_HPP_
 
 #include <cstdint>
+#include <exception>
 #include <sstream>
+#include <stdexcept>
 #include <vector>
 
 namespace alg {
@@ -45,7 +47,7 @@ class Digraph {
 
   void add_edge(uint64_t const v, uint64_t const w) {
     if (!is_valid_vertex(v) || !is_valid_vertex(w)) {
-      return;
+      throw std::runtime_error("error adding invalid edge to di-graph");
     }
     E_++;
     adj_[v].push_back(w);
@@ -54,36 +56,36 @@ class Digraph {
 
   std::vector<uint64_t> adj(uint64_t const v) const {
     if (!is_valid_vertex(v)) {
-      return std::vector<uint64_t>();
+      throw std::runtime_error(
+          "error getting adjecency list of invalid vertex");
     }
     return adj_[v];
   }
 
   uint64_t outdegree(uint64_t const v) const {
     if (!is_valid_vertex(v)) {
-      return 0;
+      throw std::runtime_error("error getting outdegree of invalid vertex");
     }
     return adj_[v].size();
   }
 
   uint64_t indegree(uint64_t const v) const {
     if (!is_valid_vertex(v)) {
-      return 0;
+      throw std::runtime_error("error getting indegree of invalid vertex");
     }
     return indegree_[v];
   }
 
-  std::string str() const {
-    std::stringstream ss;
-    ss << "vertices: " << V_ << ", edges: " << E_ << '\n';
+  std::ostream& operator<<(std::ostream& os) {
+    os << "V: " << V_ << ", E: " << E_ << '\n';
     for (uint64_t v = 0; v < V_; v++) {
-      ss << v << ": ";
-      for (uint64_t const w : adj_[v]) {
-        ss << w << ' ';
+      os << v << ":";
+      for (auto const w : adj_[v]) {
+        os << ' ' << w;
       }
-      ss << '\n';
+      os << '\n';
     }
-    return ss.str();
+    return os;
   }
 
   Digraph reverse() const {
@@ -97,12 +99,7 @@ class Digraph {
   }
 
  private:
-  bool is_valid_vertex(uint64_t const v) const {
-    if (v >= V_) {
-      return false;
-    }
-    return true;
-  }
+  bool is_valid_vertex(uint64_t const v) const { return v < V_; }
 };
 }  // namespace alg
 #endif  // !__ALG_GRAPH_DIGRAPH_HPP_

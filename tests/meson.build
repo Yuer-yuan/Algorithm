@@ -120,7 +120,15 @@ topological_test_exe = executable('topological_test',
 )
 test('topological_test', topological_test_exe)
 
+scc_test_exe = executable('scc_test',
+  graph_dir + 'scc_test.cpp',
+  include_directories: inc_dir,
+  dependencies: gtest_dep
+)
+test('scc_test', scc_test_exe)
+
 # other tests
+
 # mytest_exe = executable('mytest',
 #   'mytest.cpp',
 #   include_directories: inc_dir,

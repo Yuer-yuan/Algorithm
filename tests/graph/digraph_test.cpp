@@ -58,7 +58,7 @@ TEST(plain, tiny_graph) {
     check_adj(get_sorted_adj(v), expected_adj[v]);
   }
 
-  std::cout << G.str();
+  G << std::cout;
 }
 
 TEST(degree, tiny_graph) {

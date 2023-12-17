@@ -34,6 +34,7 @@ libalg = shared_library('libalg',
   graph_dir + 'directed_dfs.hpp',
   graph_dir + 'directed_bfs.hpp',
   graph_dir + 'directed_cycle.hpp',
+  graph_dir + 'scc.hpp',
 )
 
 # declare dependency
