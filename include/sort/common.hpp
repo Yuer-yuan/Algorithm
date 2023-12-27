@@ -2,7 +2,9 @@
 #define __ALG_SORT_COMMON_HPP__
 
 #include <cassert>
+#include <concepts>
 #include <cstdint>
+#include <functional>
 #include <iostream>
 #include <vector>
 
@@ -39,21 +41,6 @@ class Order {
                                                        T const& t2) =
       [](T const& t1, T const& t2) { return t1 < t2 ? -1 : (t1 > t2 ? 1 : 0); };
 };
-
-/* reverse elements at [s, e] */
-template <typename T>
-void reverse(std::vector<T>& v, uint64_t const s, uint64_t const e) {
-  uint64_t const n = v.size();
-  if (n == 0 || s > e) {
-    return;
-  }
-  auto is_valid = [&](uint64_t const p) { return p < n; };
-  assert(is_valid(s) && is_valid(e));
-  int s_ = s - 1, e_ = e + 1;
-  while (++s_ != e_ && s_ != --e_) {
-    std::swap(v[s_], v[e_]);
-  }
-}
 
 };  // namespace alg
 

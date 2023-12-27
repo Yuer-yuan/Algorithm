@@ -113,7 +113,7 @@ TEST(user_defined_order, input_with_int_vec) {
   alg::Timer<SystemClock> timer;
   timer.start();
 
-  alg::Insertion<int>::sort(input, alg::Order<int>::greater);
+  alg::Insertion<int, alg::Order<int>::greater>::sort(input);
 
   timer.stop();
 

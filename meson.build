@@ -9,11 +9,11 @@ project('libalg', 'cpp',
 
 #=== global options ===
 # enable sanitizer when debugging
-if (get_option('buildtype') == 'debug')
-  message('debug mode, sanitizer enabled')
-  add_project_arguments('-fsanitize=address,undefined', language: ['cpp'])
-  add_project_link_arguments('-fsanitize=address,undefined', language: ['cpp'])
-endif
+# if (get_option('buildtype') == 'debug')
+#   message('debug mode, sanitizer enabled')
+#   add_project_arguments('-fsanitize=address,undefined', language: ['cpp'])
+#   add_project_link_arguments('-fsanitize=address,undefined', language: ['cpp'])
+# endif
 
 #=== shared library ===
 # include directory

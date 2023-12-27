@@ -5,17 +5,16 @@
 #include <vector>
 
 namespace alg {
-template <typename T>
+template <typename T, bool (*cmp)(T const& t1, T const& t2) = Order<T>::less>
 class Selection {
   using Vector = std::vector<T>;
-  using Cmp = bool (*)(T const& t1, T const& t2);
 
  public:
-  static void sort(std::vector<T>& a, Cmp cmp = Order<T>::less) {
-    int n = a.size();
-    for (int i = 0; i < n; i++) {
-      int min = i;
-      for (int j = i + 1; j < n; j++) {
+  static void sort(std::vector<T>& a) {
+    size_t const n = a.size();
+    for (size_t i = 0; i < n; i++) {
+      size_t min = i;
+      for (size_t j = i + 1; j < n; j++) {
         if (cmp(a[j], a[min])) {
           min = j;
         }

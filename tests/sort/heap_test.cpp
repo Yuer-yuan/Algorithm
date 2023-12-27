@@ -1,11 +1,14 @@
-#include <gtest/gtest.h>
 #include <iostream>
+#include <string>
+#include <vector>
+
+#include <gtest/gtest.h>
+
 #include <random/random.hpp>
 #include <sort/heap.hpp>
 #include <sort/quick.hpp>
-#include <string>
 #include <time/timer.hpp>
-#include <vector>
+#include "sort/common.hpp"
 
 using namespace alg;
 
@@ -15,7 +18,7 @@ TEST(pq, init) {
   PriorityQueue<int> pq1;
   // construct with self defined cmparator
   auto cmp = [](int const& t1, int const& t2) { return t1 > t2; };
-  PriorityQueue<int> pq2(cmp);
+  PriorityQueue<int, cmp> pq2;
   // construct with vector data
   std::vector<int> keys = {1, 6, 3, 8, 5, 9, 0};
   PriorityQueue<int> pq3(keys);
@@ -97,13 +100,13 @@ TEST(pq, push_with_random_and_greater_order) {
   // test pushing with sorted array
   std::vector<std::string> data = {"apple", "banana", "cat", "dog", "egg"};
   Random<std::string>::shuffle(data);
-  PriorityQueue<std::string> pq(Order<std::string>::greater);
+  PriorityQueue<std::string, Order<std::string>::greater> pq;
   int const n = data.size();
   for (int i = 0; i < n; i++) {
     pq.push(data[i]);
     ASSERT_EQ(i + 1, pq.size());
   }
-  Quick<std::string>::sort(data, Order<std::string>::greater);
+  Quick<std::string, Order<std::string>::greater>::sort(data);
   for (int i = 0; i < n; i++) {
     std::string const max_val = pq.pop().value();
     ASSERT_EQ(data[i], max_val);
@@ -222,7 +225,7 @@ TEST(heap_sort_user_defined_order, input_with_int_vec) {
   alg::Timer<SystemClock> timer;
   timer.start();
 
-  alg::Heap<int>::sort(input, alg::Order<int>::greater);
+  alg::Heap<int, alg::Order<int>::greater>::sort(input);
 
   timer.stop();
 

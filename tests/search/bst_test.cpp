@@ -203,18 +203,19 @@ TEST(print, test_print) {
     bst.put(std::get<0>(t), std::get<1>(t));
   }
 
-  bst.print(std::cout);
+  bst << std::cout;
   bst.del_max();
-  bst.print(std::cout);
+  bst << std::cout;
   bst.del_max();
-  bst.print(std::cout);
+  bst << std::cout;
   bst.del_max();
-  bst.print(std::cout);
+  bst << std::cout;
   bst.del_max();
-  bst.print(std::cout);
+  bst << std::cout;
   bst.del_max();
-  bst.print(std::cout);
+  bst << std::cout;
   bst.del_max();
+  bst << std::cout;
 }
 
 class WrapClass {

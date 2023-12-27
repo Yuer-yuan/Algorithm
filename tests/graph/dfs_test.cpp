@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <sys/types.h>
+#include <algorithm>
 #include <cstdint>
 #include <graph/dfs.hpp>
 #include <graph/graph.hpp>
@@ -15,7 +16,7 @@ TEST(common, reverse) {
     }
     std::cout << '\n';
 
-    alg::reverse(v, s, e);
+    std::reverse(v.begin() + s, v.begin() + e + 1);
     std::cout << "after reverse: ";
     for (uint64_t const& i : v) {
       std::cout << i << ' ';

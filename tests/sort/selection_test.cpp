@@ -89,7 +89,7 @@ TEST(user_defined_order, input_with_int_vec) {
   std::cout << '\n';
 
   auto cmp = [](int const& t1, int const& t2) { return t1 > t2; };
-  alg::Selection<int>::sort(input, cmp);
+  alg::Selection<int, cmp>::sort(input);
 
   std::cout << "after sort: \n";
   for (int i = 0; i < n; i++) {

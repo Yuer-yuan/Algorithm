@@ -1,16 +1,23 @@
 #ifndef __ALG_SEARCH_BST_HPP__
 #define __ALG_SEARCH_BST_HPP__
 
+#include <concepts>
+#include <cstddef>
 #include <iostream>
 #include <memory>
 #include <optional>
 #include <ostream>
 #include <queue>
-#include <sort/common.hpp>
+#include <stdexcept>
 #include <vector>
 
+#include <sort/common.hpp>
+
 namespace alg {
-template <typename Key, typename Val>
+template <typename Key,
+          typename Val,
+          int (*cmp)(Key const& t1, Key const& t2) =
+              Order<Key>::default_three_way_comparator>
 class BST {
   struct Node;
   using Node = struct Node;
@@ -18,35 +25,32 @@ class BST {
   using UniPtr = std::unique_ptr<Node>;
   using OptVal = std::optional<Val>;
   using OptKey = std::optional<Key>;
-  using Cmp = int (*)(Key const& t1, Key const& t2);
 
   // helper class
   struct Node {
     Key key_;
     Val val_;
     UniPtr left_, right_;
-    int size_;
+    size_t size_;
 
     Node(Key const& key, Val const& val)
         : key_{key}, val_{val}, left_{nullptr}, right_{nullptr}, size_{1} {}
   };
 
   UniPtr root_;
-  Cmp cmp_;
 
  public:
   // constructors
-  BST(Cmp cmp = Order<Key>::default_three_way_comparator)
-      : root_{nullptr}, cmp_{cmp} {}
+  BST() : root_{nullptr} {}
 
   // return the size of the tree
-  int size() const { return size(root_.get()); }
+  size_t size() const { return size(root_.get()); }
 
   // return the size between the given range
-  int size(Key const& lo, Key const& hi) const {
-    if (cmp_(lo, hi) > 0) {
-      std::cerr << "Error getting size between an abnormal range\n";
-      return 0;
+  size_t size(Key const& lo, Key const& hi) const {
+    if (cmp(lo, hi) > 0) {
+      throw std::runtime_error(
+          "Error getting size between an abnormal range\n");
     }
     if (!get(hi).has_value()) {
       return rank(hi) - rank(lo);
@@ -129,7 +133,7 @@ class BST {
   };
 
   // return the number of keys strictly smaller than given
-  int rank(Key const& key) const { return rank(root_.get(), key); };
+  size_t rank(Key const& key) const { return rank(root_.get(), key); };
 
   // get all keys
   VecKey keys() const {
@@ -150,7 +154,7 @@ class BST {
   }
 
   // return the height of the tree
-  int height() const { return height(root_.get()); };
+  size_t height() const { return height(root_.get()); };
 
   // return the keys in level order
   // breath first search
@@ -174,19 +178,20 @@ class BST {
   };
 
   // print in a level form
-  void print(std::ostream& ostream) const {
+  std::ostream& operator<<(std::ostream& ostream) const {
     ostream << "binary search tree:\n";
     print_node(ostream, 0, root_.get(), Direction::Root);
+    return ostream;
   }
 
  private:
-  inline int size(Node* x) const { return x == nullptr ? 0 : x->size_; }
+  size_t size(Node* x) const { return x == nullptr ? 0 : x->size_; }
 
   UniPtr put(UniPtr x, Key const& key, Val const& val) {
     if (x == nullptr) {
       return std::make_unique<Node>(key, val);
     }
-    int c = cmp_(key, x->key_);
+    int const c = cmp(key, x->key_);
     // less, put to `left_`
     if (c < 0) {
       x->left_ = put(std::move(x->left_), key, val);
@@ -208,7 +213,7 @@ class BST {
     if (x == nullptr) {
       return nullptr;
     }
-    int c = cmp_(key, x->key_);
+    int const c = cmp(key, x->key_);
     if (c < 0) {
       return get(x->left_.get(), key);
     }
@@ -222,7 +227,7 @@ class BST {
     if (x == nullptr) {
       return nullptr;
     }
-    int c = cmp_(key, x->key_);
+    int const c = cmp(key, x->key_);
     if (c < 0) {
       x->left_ = del(std::move(x->left_), key);
     } else if (c > 0) {
@@ -293,7 +298,7 @@ class BST {
     if (x == nullptr) {
       return nullptr;
     }
-    int c = cmp_(key, x->key_);
+    int const c = cmp(key, x->key_);
     if (c == 0) {
       // equal
       return x;
@@ -318,7 +323,7 @@ class BST {
     if (x == nullptr) {
       return nullptr;
     }
-    int c = cmp_(key, x->key_);
+    int const c = cmp(key, x->key_);
     if (c == 0) {
       return x;
     }
@@ -336,7 +341,7 @@ class BST {
     if (x == nullptr) {
       return nullptr;
     }
-    int left_size = size(x->left_.get());
+    int const left_size = size(x->left_.get());
     if (rank < left_size) {
       return select(x->left_.get(), rank);
     }
@@ -351,7 +356,7 @@ class BST {
     if (x == nullptr) {
       return 0;
     }
-    int c = cmp_(key, x->key_);
+    int const c = cmp(key, x->key_);
     if (c < 0) {
       // `key` is smaller than current
       // find on the left
@@ -371,8 +376,7 @@ class BST {
     if (x == nullptr) {
       return;
     }
-    int cl = cmp_(lo, x->key_);
-    int ch = cmp_(hi, x->key_);
+    int const cl = cmp(lo, x->key_), ch = cmp(hi, x->key_);
     if (cl < 0) {
       keys(x->left_.get(), vk, lo, hi);
     }
@@ -384,7 +388,7 @@ class BST {
     }
   }
 
-  int height(Node* x) const {
+  size_t height(Node* x) const {
     if (x == nullptr) {
       return 0;
     }
@@ -394,14 +398,14 @@ class BST {
   enum Direction { Root, Left, Right };
 
   void print_node(std::ostream& ostream,
-                  int level,
-                  Node* x,
+                  size_t const level,
+                  Node* const x,
                   Direction d) const {
     if (x == nullptr) {
       ostream << "empty\n";
       return;
     }
-    for (int i = 0; i < level; i++) {
+    for (size_t i = 0; i < level; i++) {
       ostream << ' ';
     }
     ostream << "-level " << level << ", size " << x->size_ << ", (" << x->key_

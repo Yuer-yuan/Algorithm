@@ -124,7 +124,7 @@ TEST(plain_order, input_with_random_vec) {
 
   timer.reset();
   auto cmp = [](int const& t1, int const& t2) { return t1 > t2; };
-  alg::Shell<int>::sort(input, cmp);
+  alg::Shell<int, cmp>::sort(input);
   timer.stop();
 
   std::cout << "after sort: \n";
@@ -154,7 +154,7 @@ TEST(user_defined_order, input_with_int_vec) {
   timer.start();
 
   auto cmp = [](int const& t1, int const& t2) { return t1 > t2; };
-  alg::Shell<int>::sort(input, cmp);
+  alg::Shell<int, cmp>::sort(input);
 
   timer.stop();
 

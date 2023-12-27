@@ -5,25 +5,23 @@
 #include <vector>
 
 namespace alg {
-template <typename T>
+template <typename T, bool (*cmp)(T const&, T const&) = Order<T>::less>
 class Insertion {
   using Vector = std::vector<T>;
-  using Cmp = bool (*)(T const& t1, T const& t2);
 
  public:
-  static void sort(Vector& a,
-                   int const lo,
-                   int const hi,
-                   Cmp cmp = Order<T>::less) {
-    for (int i = lo + 1; i <= hi; i++) {
-      for (int j = i; j > lo && cmp(a[j], a[j - 1]); j--) {
+  static void sort(Vector& a, size_t const lo, size_t const hi) {
+    for (size_t i = lo + 1; i <= hi; i++) {
+      for (size_t j = i; j > lo && cmp(a[j], a[j - 1]); j--) {
         std::swap(a[j], a[j - 1]);
       }
     }
   }
 
-  static void sort(Vector& a, Cmp cmp = Order<T>::less) {
-    sort(a, 0, a.size() - 1, cmp);
+  static void sort(Vector& a) {
+    if (!a.empty()) {
+      sort(a, 0, a.size() - 1);
+    }
   }
 };
 };  // namespace alg

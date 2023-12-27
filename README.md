@@ -160,8 +160,6 @@ $$
 
 ## radix sort
 
-[TBD]
-
 ## summary
 
 ![image-20231010174242103](./assets/image-20231010174242103.png)
@@ -289,7 +287,9 @@ order-of-growth performance for typical `Graph` implementations
 ### cycle detection
 
 - recursive call stack represents a path
-- if we find a edge v -> w which is already on the stack, we find a cycle
+- DFS method
+  - if we find a edge v -> w which is already on the stack, we find a cycle
+
 
 ### topological sort
 
@@ -410,6 +410,12 @@ order-of-growth performance for typical `Graph` implementations
   - a SPT (shortest path tree) exists if there is no negative cycles
 - set distance of s to 0 and others to $\infin$
 - repeat for V times: relax all E edges
+- time proportional to $O(V^2 + VE)$
+
+- in acyclic digraph -- linear time
+  - topological sort first
+  - relax edges in topological order
+  - time proportional to $\Theta(V + E)$
 
 ### summary
 
@@ -526,11 +532,3 @@ order-of-growth performance for typical `Graph` implementations
 - unlike divide-and-conquer method, dynamic programming (a tabular way to avoid repeatedly calculating) solves overlapping subproblems
 - DP focuses on optimization problems
 - the time of DP is proportional to the out degrees of subproblem digraph 
-
-
-# reference
-
-1. [princeton algorithm, 4th edition](https://algs4.cs.princeton.edu/home/)
-2. [latex mathematical sysmbols](https://www.cmor-faculty.rice.edu/~heinken/latex/symbols.pdf)
-3. [counting sort](https://www.geeksforgeeks.org/counting-sort/)
-4. [shell sort](https://www.geeksforgeeks.org/shellsort/)

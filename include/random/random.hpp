@@ -1,6 +1,7 @@
 #ifndef __ALG_RANDONM_RANDOM__
 #define __ALG_RANDONM_RANDOM__
 
+#include <cstdint>
 #include <random>
 #include <vector>
 
@@ -22,12 +23,11 @@ class Random {
   static void shuffle(std::vector<T>& a) {
     std::random_device rand_dev;
     std::mt19937 generator(rand_dev());
-    int n = a.size();
-    for (int i = 0; i < n; i++) {
+    for (size_t i = 0; i < a.size(); i++) {
       // uniform distribution on closed interval
       // https://en.cppreference.com/w/cpp/numeric/random/uniform_int_distribution
-      std::uniform_int_distribution<int> distr(0, i);
-      int r = distr(generator);
+      std::uniform_int_distribution<uint64_t> distr(0, i);
+      size_t const r = distr(generator);
       std::swap(a[i], a[r]);
     }
   }

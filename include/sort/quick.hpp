@@ -1,63 +1,64 @@
 #ifndef __ALG_SORT_QUICK_HPP__
 #define __ALG_SORT_QUICK_HPP__
 
+#include <cstddef>
+#include <cstdint>
+#include <functional>
 #include <random/random.hpp>
-#include <sort/common.hpp>
-#include <sort/insertion.hpp>
+#include <stdexcept>
 #include <vector>
 
+#include <sort/common.hpp>
+#include <sort/insertion.hpp>
+
 namespace alg {
-template <typename T>
+/*
+ * quick sort
+ */
+template <typename T, bool (*cmp)(T const&, T const&) = Order<T>::less>
 class Quick {
   using Vector = std::vector<T>;
-  using Cmp = bool (*)(T const& t1, T const& t2);
 
  public:
-  static void sort(Vector& a, Cmp cmp = Order<T>::less) {
+  static void sort(Vector& a) {
     Random<T>::shuffle(a);
-    sort(a, 0, a.size() - 1, cmp);
+    if (a.size() > 0) {
+      sort(a, 0, a.size() - 1);
+    }
   }
 
  private:
-  static void sort(Vector& a,
-                   int const lo,
-                   int const hi,
-                   Cmp cmp = Order<T>::less) {
+  static void sort(Vector& a, size_t const lo, size_t const hi) {
     if (hi <= lo) {
       return;
     }
-    int const j = partition(a, lo, hi, cmp);
-    sort(a, lo, j - 1, cmp);
-    sort(a, j + 1, hi, cmp);
+    size_t const j = partition(a, lo, hi);
+    if (j > 0) {  // be really carefully when substracting from `size_t` num
+      sort(a, lo, j - 1);
+    }
+    sort(a, j + 1, hi);
   }
 
-  static int partition(Vector& a,
-                       int const lo,
-                       int const hi,
-                       Cmp cmp = Order<T>::less) {
-    int i = lo, j = hi + 1;
-    while (true) {
-      // find item on left to swap
-      // that no less than `a[lo]`
-      while (cmp(a[++i], a[lo])) {
+  static size_t partition(Vector& a, size_t const lo, size_t const hi) {
+    size_t i = lo, j = hi + 1;
+    size_t const pivot = lo;
+    for (;;) {
+      // find item on left to swap that no less than `a[lo]`
+      for (; cmp(a[++i], a[pivot]);) {
         if (i == hi) {
           break;
         }
       }
-      // find item on right to swap
-      // that no greater than `a[lo]`
-      while (cmp(a[lo], a[--j])) {
-        // redundant
+      // find item on right to swap that no greater than `a[lo]`
+      for (; cmp(a[pivot], a[--j]);) {
         if (j == lo) {
           break;
         }
       }
-      // until pointers cross
-      // `j` is the final position of `a[lo]`
+      // until pointers cross, `j` is the final position of `a[lo]`
       if (i >= j) {
         break;
       }
-      // s.t.
       // from `lo` to `j - 1`, no greater than `a[j]`
       // from `j + 1` to `hi`, no less than `a[j]`
       std::swap(a[i], a[j]);
@@ -67,113 +68,103 @@ class Quick {
   }
 };
 
-// practical improvements added:
-// insertion cutoff and median of three select
-template <typename T>
+/*
+ * quick sort with practical improvements added
+ * 1. insertion cutoff
+ * 2. median of three select
+ */
+template <typename T, bool (*cmp)(T const&, T const&) = Order<T>::less>
 class QuickX {
   using Vector = std::vector<T>;
-  using Cmp = bool (*)(T const& t1, T const& t2);
 
  public:
-  static void sort(Vector& a, Cmp cmp = Order<T>::less) {
+  static void sort(Vector& a) {
     Random<T>::shuffle(a);
-    sort(a, 0, a.size() - 1, cmp);
+    if (!a.empty()) {
+      sort(a, 0, a.size() - 1);
+    }
   }
 
  private:
-  static constexpr int INSERTION_CUTOFF = 8;
+  static constexpr size_t INSERTION_CUTOFF = 8;
 
-  static void sort(Vector& a,
-                   int const lo,
-                   int const hi,
-                   Cmp cmp = Order<T>::less) {
+  static void sort(Vector& a, size_t const lo, size_t const hi) {
     if (hi <= lo) {
       return;
     }
     // insertion sort for small subarrays
-    int const n = hi - lo + 1;
+    size_t const n = 1 + hi - lo;
     if (n <= INSERTION_CUTOFF) {
-      Insertion<T>::sort(a, lo, hi, cmp);
+      Insertion<T, cmp>::sort(a, lo, hi);
       return;
     }
-    int const j = partition(a, lo, hi, cmp);
-    sort(a, lo, j - 1, cmp);
-    sort(a, j + 1, hi, cmp);
+    size_t const j = partition(a, lo, hi);
+    if (j > 0) {
+      sort(a, lo, j - 1);
+    }
+    sort(a, j + 1, hi);
   }
 
-  static int partition(Vector& a,
-                       int const lo,
-                       int const hi,
-                       Cmp cmp = Order<T>::less) {
-    int const n = hi - lo + 1;
-    int const m = median3(a, lo, lo + n / 2, hi, cmp);
+  static size_t partition(Vector& a, size_t const lo, size_t const hi) {
+    size_t const n = hi - lo + 1;
+    size_t const m = median3(a, lo, lo + n / 2, hi);
     std::swap(a[lo], a[m]);
-    int i = lo, j = hi + 1;
+    size_t i = lo, j = hi + 1;
     while (true) {
-      // find item on left to swap
-      // that no less than `a[lo]`
       while (cmp(a[++i], a[lo])) {
         if (i == hi) {
           break;
         }
       }
-      // find item on right to swap
-      // that no greater than `a[lo]`
       while (cmp(a[lo], a[--j])) {
-        // redundant
         if (j == lo) {
           break;
         }
       }
-      // until pointers cross
-      // `j` is the final position of `a[lo]`
       if (i >= j) {
         break;
       }
-      // s.t.
-      // from `lo` to `j - 1`, no greater than `a[j]`
-      // from `j + 1` to `hi`, no less than `a[j]`
       std::swap(a[i], a[j]);
     }
     std::swap(a[lo], a[j]);
     return j;
   }
 
-  static int median3(Vector& a,
-                     int const i,
-                     int const j,
-                     int const k,
-                     Cmp cmp = Order<T>::less) {
+  static size_t median3(Vector& a,
+                        size_t const i,
+                        size_t const j,
+                        size_t const k) {
     return cmp(a[i], a[j]) ? (cmp(a[j], a[k]) ? j : (cmp(a[i], a[k]) ? k : i))
                            : (cmp(a[k], a[j]) ? j : (cmp(a[k], a[i]) ? k : i));
   }
 };
 
-// three way partition
-template <typename T>
+/*
+ * quick sort: three-way partition
+ */
+template <typename T,
+          int (*cmp)(T const& t1, T const& t2) =
+              Order<T>::default_three_way_comparator>
 class Quick3Way {
   using Vector = std::vector<T>;
-  using Cmp = int (*)(T const& t1, T const& t2);
 
  public:
-  static void sort(Vector& a,
-                   Cmp cmp = Order<T>::default_three_way_comparator) {
+  static void sort(Vector& a) {
     Random<T>::shuffle(a);
-    sort(a, 0, a.size() - 1, cmp);
+    if (!a.empty()) {
+      sort(a, 0, a.size() - 1);
+    }
   }
 
  private:
-  static void sort(Vector& a,
-                   int const lo,
-                   int const hi,
-                   Cmp cmp = Order<T>::default_three_way_comparator) {
+  static void sort(Vector& a, size_t const lo, size_t const hi) {
     if (hi <= lo) {
       return;
     }
-    int lt = lo, i = lo + 1, gt = hi;
+    size_t lt = lo, i = lo + 1, gt = hi;
     T const v = a[lo];
     while (i <= gt) {
-      int r = cmp(a[i], v);
+      int const r = cmp(a[i], v);
       if (r < 0) {
         std::swap(a[i], a[lt]);
         i++;
@@ -185,23 +176,28 @@ class Quick3Way {
         i++;
       }
     }
-    sort(a, lo, lt - 1, cmp);
+    if (lt > 0) {
+      sort(a, lo, lt - 1, cmp);
+    }
     sort(a, gt + 1, hi, cmp);
   }
 };
 
 // three way partition
-template <typename T>
+template <typename T, bool (*cmp)(T const& t1, T const& t2) = Order<T>::less>
 class QuickSelect {
   using Vector = std::vector<T>;
-  using Cmp = bool (*)(T const& t1, T const& t2);
 
  public:
-  static T const& select(Vector& a, int k, Cmp cmp = Order<T>::less) {
+  static T const& select(Vector& a, size_t k) {
     Random<T>::shuffle(a);
-    int lo = 0, hi = a.size() - 1;
+    if (k >= a.size()) {
+      throw std::runtime_error(
+          "QuickSelect selecting error: cannot select out-of-range element");
+    }
+    size_t lo = 0, hi = a.size() - 1;
     while (lo < hi) {
-      int j = partition(a, lo, hi, cmp);
+      size_t const j = partition(a, lo, hi);
       if (j > k) {
         hi = j - 1;
       } else if (j < k) {
@@ -214,35 +210,22 @@ class QuickSelect {
   }
 
  private:
-  static int partition(Vector& a,
-                       int const lo,
-                       int const hi,
-                       Cmp cmp = Order<T>::less) {
-    int i = lo, j = hi + 1;
+  static size_t partition(Vector& a, size_t const lo, size_t const hi) {
+    size_t i = lo, j = hi + 1;
     while (true) {
-      // find item on left to swap
-      // that no less than `a[lo]`
       while (cmp(a[++i], a[lo])) {
         if (i == hi) {
           break;
         }
       }
-      // find item on right to swap
-      // that no greater than `a[lo]`
       while (cmp(a[lo], a[--j])) {
-        // redundant
         if (j == lo) {
           break;
         }
       }
-      // until pointers cross
-      // `j` is the final position of `a[lo]`
       if (i >= j) {
         break;
       }
-      // s.t.
-      // from `lo` to `j - 1`, no greater than `a[j]`
-      // from `j + 1` to `hi`, no less than `a[j]`
       std::swap(a[i], a[j]);
     }
     std::swap(a[lo], a[j]);
