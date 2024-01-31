@@ -423,7 +423,51 @@ order-of-growth performance for typical `Graph` implementations
 
 ## maximum flow and minimum cut
 
-[TBD]
+### $\textbf{mincut}$ problem
+
+- given a digraph with positive edge capacity, source $s$ and destination $t$
+- a $\textit{st}\text{-cut (cut)}$ is a partition of the vertices into two disjoint sets, with $s$ in one set $A$ and $t$ in other set $B$
+- its $\text{capacity}$ is the sum of capacities from $A$ to $B$
+- ![image-20231229201019475](./assets/image-20231229201019475.png)
+- $\text{mincut}$ problem -- find a cut of minimum capacity
+
+### $\textbf{maxflow}$ problem
+
+- the same input as $\text{mincut}$'s
+- a $\textit{st}\text{-flow (flow)}$ is an assignment of values to edges that:
+  - capacity constraint: $0 \le \text{edge's flow} \le \text{edge's capacity}$ 
+  - local equilibrium: $\text{inflow} = \text{outflow}$ at every vertex except for $s$ and $t$
+- the value of flow is the $\text{inflow}$ at $t$
+- $\text{maxflow}$ problem -- find a flow of maximum value
+
+### $\textbf{Ford-Fulkerson}$ algorithm
+
+- initialization -- start with $0$ flow
+- ![image-20231229203023569](./assets/image-20231229203023569.png)
+- idea -- increase flow along $\text{augmenting path}s$
+  - $\text{augmenting path}$ -- find a undirected path from $s$ to $t$ such that:
+    - can increase flow on forward edges (not full).
+    - can decrease flow on backward edges (not empty).
+    - ![image-20231229203730785](./assets/image-20231229203730785.png)
+    - ![image-20231229203914512](./assets/image-20231229203914512.png)
+- termination -- no more augmenting paths 
+  - all paths from $s$ to  $t$ are blocked by either a
+    - full forward edge
+    - empty backward edge
+
+### $\textbf{Maxflow-Mincut}$ Theorem
+
+- $\text{net flow across cut}(A, B) = \sum{(\text{flows from } A \text{ to } B)} - \sum{(\text{flows from } B \text{ to } A)}$
+- $\text{flow-value lemma}$
+  - $f$ - any flow, $(A,B)$ - any cut
+  - $\text{net flow across cut} (A,B) = \text{the value of } f$
+  - ![image-20231229224428487](./assets/image-20231229224428487.png)
+- proof
+  - induction
+    - $B = \{t\}$
+    - induction step: remains true by local equilibrium when moving any vertex from $A$ to $B$
+
+
 
 # string
 
