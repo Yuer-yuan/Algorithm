@@ -467,7 +467,15 @@ order-of-growth performance for typical `Graph` implementations
     - $B = \{t\}$
     - induction step: remains true by local equilibrium when moving any vertex from $A$ to $B$
 
+### $\textbf{maxflow}$ Application
 
+- bipartite matching problem
+  - given a bipartite graph, find a perfect matching
+  - network formulation of bipartite matching
+- baseball elimination
+  - $\text{maxflow}$ formulation
+  - ![image-20240201211838818](./assets/image-20240201211838818.png)
+  - 
 
 # string
 
