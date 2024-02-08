@@ -13,3 +13,5 @@ seam_exe = executable('burrows',
   )
 
 hex_dump_exe = executable('hex_dump', 'hex_dump.cpp')
+
+test_exe = executable('t', 'test.cpp', 'circular_suffix_array.h')

@@ -540,17 +540,18 @@ order-of-growth performance for typical `Graph` implementations
 ### key concepts to show a problem to be NPC
 
 - decision problems -- the answer is "yes" or "no". NPC applies directly not to optimization problems. optimization problem can be cast to related decision problem to which a bound of value to be optimized imposed (e.g., is there a shortest path from v to w -> is there a path from v to w with at least k edges?)
-- reductions
+- **reductions**
   - given a problem B, we can transform instance of problem A to problem B in polynomial time.
   - the answer of B is the answer of A
   - thus we can solve problem A in polynomial time by transforming its instance to that of another polynomial decision problem in polynomial time
   - ![image-20231124111238012](./assets/image-20231124111238012.png)
   - hardness proof: B is NPC if A is NPC and there is a transforming from instance of A to instance of B
+  - $\text{total cost} = \text{cost of B} + \text{cost of reduction from instance of A to that of B}$
 - a first NPC problem
   - circuit-satisfactory-problem
 - procedure
   - conjecture: **Q can be poly-reducted to Q' if and only if instance of Q can be poly-transformed to instance of Q', and any answer towards instance of Q' is also answer towards instance of Q**.
-  - conclusion: Q is at most as harder as Q'
+  - conclusion: Q is **at most as harder** as Q'
   - how to prove Q is NPC? -- reduce a NPC problem to the given problem
     - prove Q is NP (poly-checked)
     - select a NPC problem Q'

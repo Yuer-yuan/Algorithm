@@ -5,36 +5,25 @@
 #include <cstddef>
 #include <cstdint>
 #include <iostream>
+#include <list>
 #include <ostream>
 #include <stdexcept>
 #include <vector>
 
 class CircularSuffixArray {
+  static constexpr size_t R = 256;
   std::vector<uint8_t> str_;
   std::vector<size_t> indexes_;  // indexes are stored
-  static constexpr size_t R = 256;
 
  public:
-  // be really careful when using `string_view` for `str.c_str()`
-  // will truncate at `\0` like c-style string
-  // https://stackoverflow.com/questions/16594298/why-stringstreamstr-truncates-string
   CircularSuffixArray(std::vector<uint8_t> const& str) : str_(str) {
     auto const n = str_.size();
     indexes_.reserve(n);
     for (size_t i = 0; i < n; i++) {
       indexes_.push_back(i);
     }
-    std::sort(indexes_.begin(), indexes_.end(),
-              [&](auto const lhs, auto const rhs) {
-                for (size_t i = 0; i < n; i++) {
-                  auto const lc = charAt(i, lhs), rc = charAt(i, rhs);
-                  if (lc == rc) {
-                    continue;
-                  }
-                  return lc < rc;
-                }
-                return lhs <= rhs;
-              });
+
+    plain_sort();
   }
 
   static constexpr size_t getR() { return R; }
@@ -76,8 +65,24 @@ class CircularSuffixArray {
   }
 
  private:
-  uint8_t charAt(size_t const i, size_t const index) {
+  uint8_t charAt(size_t const i, size_t const index) const {
     return str_[(i + index) % str_.size()];
+  }
+
+  // $O(n^2 log{n})$
+  void plain_sort() {
+    std::sort(indexes_.begin(), indexes_.end(),
+              [&](auto const lhs, auto const rhs) {
+                auto const n = str.size();
+                for (size_t i = 0; i < n; i++) {
+                  auto const lc = charAt(i, lhs), rc = charAt(i, rhs);
+                  if (lc == rc) {
+                    continue;
+                  }
+                  return lc < rc;
+                }
+                return lhs <= rhs;
+              });
   }
 };
 
