@@ -1,11 +1,10 @@
 #ifndef __ALG_SORT_HEAP_HPP__
 #define __ALG_SORT_HEAP_HPP__
 
-#include <cstdint>
-#include <optional>
+#include <stdexcept>
 #include <vector>
 
-#include <sort/common.hpp>
+#include "sort/common.hpp"
 
 namespace alg {
 template <typename T, bool (*cmp)(T const& t1, T const& t2) = Order<T>::less>
@@ -50,7 +49,6 @@ class Heap {
 template <typename T, bool (*cmp)(T const& t1, T const& t2) = Order<T>::less>
 class PriorityQueue {
   using Vector = std::vector<T>;
-  using Optional = std::optional<T>;
 
  private:
   Vector pq_;
@@ -76,10 +74,10 @@ class PriorityQueue {
     swim(pq_.size());
   }
 
-  Optional pop() {
+  T pop() {
     // empty
     if (pq_.empty()) {
-      return std::nullopt;
+      throw std::runtime_error("error popping: PQ is null");
     }
     T const r = pq_[0];
     std::swap(pq_[0], pq_[pq_.size() - 1]);

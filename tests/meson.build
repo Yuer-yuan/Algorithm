@@ -2,6 +2,7 @@ inc_dir = '../include'
 sort_dir = './sort/'
 search_dir = './search/'
 graph_dir = './graph/'
+string_dir = './string/'
 gtest_dep = dependency('gtest')
 
 # sort tests

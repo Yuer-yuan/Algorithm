@@ -527,6 +527,26 @@ order-of-growth performance for typical `Graph` implementations
 
 ![image-20231025112306864](./assets/image-20231025112306864.png)
 
+## data compression
+
+- why do we need compression?
+- is there an algorithm to compress all bit strings?
+
+### Huffman
+
+- for variable-length coding, how to avoid ambiguity?
+  - ensure no codeword is a prefix of another
+  - we need a prefix-free code
+- how to represent the prefix-free code
+  - using a binary trie
+  - chars in leaves
+  - codeword is path from root to leaf
+- is it adequate to just dump encoded bit stream? -- no, built trie is also needed, and preorder traversal is needed
+  - internal node: 0
+  - leaf node: 1
+  - char followed
+
+
 # NP completeness
 
 - NP-complete problems: no polynomial solutions have been found for any one of them -- $P \neq NP$

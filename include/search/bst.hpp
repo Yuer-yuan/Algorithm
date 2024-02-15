@@ -1,7 +1,6 @@
 #ifndef __ALG_SEARCH_BST_HPP__
 #define __ALG_SEARCH_BST_HPP__
 
-#include <concepts>
 #include <cstddef>
 #include <iostream>
 #include <memory>

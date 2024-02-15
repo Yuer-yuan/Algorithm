@@ -5,12 +5,18 @@ graph_dir = 'graph/'
 string_dir = 'string/'
 time_dir = 'time/'
 random_dir = 'random/'
+string_dir = 'string/'
+io_dir = 'IO/'
 
 # build library
 libalg = shared_library('libalg', 
+  # IO
+  io_dir + 'bitstream.hpp',
+
   # time
   time_dir + 'timer.hpp',
   random_dir + 'random.hpp',
+
   # sort
   sort_dir + 'common.hpp',
   sort_dir + 'selection.hpp',
@@ -20,11 +26,13 @@ libalg = shared_library('libalg',
   sort_dir + 'quick.hpp',
   sort_dir + 'heap.hpp',
   sort_dir + 'common.hpp',
+
   # search
   search_dir + 'bst.hpp',
   search_dir + 'llrb.hpp',
   search_dir + 'seperate_chaining.hpp',
   search_dir + 'linear_probing.hpp',
+
   # graph
   graph_dir + 'graph.hpp',
   graph_dir + 'dfs.hpp',
@@ -35,7 +43,8 @@ libalg = shared_library('libalg',
   graph_dir + 'directed_bfs.hpp',
   graph_dir + 'directed_cycle.hpp',
   graph_dir + 'scc.hpp',
+
+  # string
+  string_dir + 'huffman.hpp',
 )
 
-# declare dependency
-# libalg_dep = declare_dependency(include_directories: inc_dir, link_with: libalg)

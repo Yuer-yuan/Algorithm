@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -25,12 +26,15 @@ TEST(pq, init) {
   Quick<int>::sort(keys);
   int const n = keys.size();
   for (int i = 0; i < n; i++) {
-    int const min_key = pq3.pop().value();
+    int const min_key = pq3.pop();
     ASSERT_EQ(min_key, keys[i]);
     ASSERT_EQ(pq3.size(), n - i - 1);
   }
-  std::optional<int> min_key = pq3.pop();
-  ASSERT_FALSE(min_key.has_value());
+  try {
+    pq3.pop();
+  } catch (std::runtime_error const& e) {
+    ASSERT_TRUE(true);
+  }
 }
 
 TEST(pq, size) {
@@ -66,13 +70,15 @@ TEST(pq, push_with_sorted) {
     ASSERT_EQ(i + 1, pq.size());
   }
   for (int i = 0; i < n; i++) {
-    std::string const min_val = pq.pop().value();
+    std::string const min_val = pq.pop();
     ASSERT_EQ(data[i], min_val);
     ASSERT_EQ(pq.size(), n - i - 1);
   }
-  auto min_val = pq.pop();
-  ASSERT_FALSE(min_val.has_value());
-  ASSERT_EQ(pq.size(), 0);
+  try {
+    pq.pop();
+  } catch (std::runtime_error const& e) {
+    ASSERT_TRUE(true);
+  }
 }
 
 TEST(pq, push_with_random) {
@@ -87,13 +93,15 @@ TEST(pq, push_with_random) {
   }
   Quick<std::string>::sort(data);
   for (int i = 0; i < n; i++) {
-    std::string const min_val = pq.pop().value();
+    std::string const min_val = pq.pop();
     ASSERT_EQ(data[i], min_val);
     ASSERT_EQ(pq.size(), n - i - 1);
   }
-  auto min_val = pq.pop();
-  ASSERT_FALSE(min_val.has_value());
-  ASSERT_EQ(pq.size(), 0);
+  try {
+    pq.pop();
+  } catch (std::runtime_error const& e) {
+    ASSERT_TRUE(true);
+  }
 }
 
 TEST(pq, push_with_random_and_greater_order) {
@@ -108,13 +116,15 @@ TEST(pq, push_with_random_and_greater_order) {
   }
   Quick<std::string, Order<std::string>::greater>::sort(data);
   for (int i = 0; i < n; i++) {
-    std::string const max_val = pq.pop().value();
+    std::string const max_val = pq.pop();
     ASSERT_EQ(data[i], max_val);
     ASSERT_EQ(pq.size(), n - i - 1);
   }
-  auto max_val = pq.pop();
-  ASSERT_FALSE(max_val.has_value());
-  ASSERT_EQ(pq.size(), 0);
+  try {
+    pq.pop();
+  } catch (std::runtime_error const& e) {
+    ASSERT_TRUE(true);
+  }
 }
 
 TEST(heap_sort, input_with_int_vec) {
