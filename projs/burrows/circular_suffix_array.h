@@ -73,7 +73,7 @@ class CircularSuffixArray {
   void plain_sort() {
     std::sort(indexes_.begin(), indexes_.end(),
               [&](auto const lhs, auto const rhs) {
-                auto const n = str.size();
+                auto const n = str_.size();
                 for (size_t i = 0; i < n; i++) {
                   auto const lc = charAt(i, lhs), rc = charAt(i, rhs);
                   if (lc == rc) {
