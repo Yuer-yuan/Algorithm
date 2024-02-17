@@ -71,6 +71,12 @@ linear_probing_test_exe = executable('linear_probing_test',
 )
 test('linear_probing_test', linear_probing_test_exe)
 
+trie_test_exe = executable('trie_test', 
+  search_dir + 'trie_test.cpp', 
+  include_directories: inc_dir,
+  dependencies: gtest_dep)
+test('trie_test', trie_test_exe)
+
 # graph tests
 graph_test_exe = executable('graph_test',
   graph_dir + 'graph_test.cpp',

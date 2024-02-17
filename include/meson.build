@@ -32,6 +32,7 @@ libalg = shared_library('libalg',
   search_dir + 'llrb.hpp',
   search_dir + 'seperate_chaining.hpp',
   search_dir + 'linear_probing.hpp',
+  search_dir + 'trie.hpp',
 
   # graph
   graph_dir + 'graph.hpp',
@@ -46,5 +47,6 @@ libalg = shared_library('libalg',
 
   # string
   string_dir + 'huffman.hpp',
+  string_dir + 'LZW.hpp',
 )
 

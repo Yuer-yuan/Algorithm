@@ -546,6 +546,31 @@ order-of-growth performance for typical `Graph` implementations
   - leaf node: 1
   - char followed
 
+### LZW
+
+- a **adaptive** model: learn and update as text read; encoding starts from beginning.
+  - static model, which is for all texts, is fast but not optimal because different texts have different statistical properties, e.g., ASCII, Morse code.
+  - dynamic model, which is generated in a preliminary pass from given text, must be transmitted, e.g., Huffman code.
+  - adaptive model is more accurate and produces better compression
+- LZW compression:
+  - create a ST associating $W$-bit codewords with string keys (string key -> $W$-bit codeword)
+  - initiate ST with single-char words
+  - find the longest prefix $s$ in ST that is unscanned in the input
+  - write codewords of $s$
+  - add $s + c$ to ST, where $c$​ is the next char in the input
+    - btw: a LZW compression code table ST can be represented as a trie
+- LZW expansion
+  - create a ST associating string values with $W$-bit keys ($W$-bit key-> string value)
+  - initiate ST with single-char words
+  - read a $W$-bit key. the find and print its string value in ST
+  - update ST
+    - btw: a LZW expansion code table ST can be represented as a array of size $2^W$
+- both Huffman code and LZW code are lossless compression models. 
+  - Huffman code represents fixed-length symbols with variable-length codes.
+  - LZW code represents variable-length symbols with fixed-length codes.
+
+![image-20240217002501751](./assets/image-20240217002501751.png)
+
 
 # NP completeness
 

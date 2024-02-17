@@ -5,7 +5,12 @@ inc_dir = '../include/'
 bits_dump_exe = executable('bits_dump', 'bits_dump.cpp')
 
 huffman_exe = executable('huffman', 'huffman.cpp',
-  include_directories: inc_dir)
+  include_directories: inc_dir,
+  dependencies: libalg_dep)
+
+LZW_exe = executable('LZW', 'LZW.cpp',
+  include_directories: inc_dir,
+  dependencies: libalg_dep)
 
 in_exe = executable('in',
   'in.cpp',
